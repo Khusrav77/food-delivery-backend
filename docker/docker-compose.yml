@@ -1,0 +1,23 @@
+version: '3.8'
+
+volumes:
+  postgres_data:
+
+services:
+
+  postgres:
+    image: postgres:15
+    container_name: food_delivery_db
+
+    restart: always
+
+    environment:
+      POSTGRES_DB: food_delivery_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+    ports:
+      - "5437:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
