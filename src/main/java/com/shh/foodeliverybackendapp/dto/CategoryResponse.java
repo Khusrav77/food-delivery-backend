@@ -1,16 +1,17 @@
 package com.shh.foodeliverybackendapp.dto;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public final class CategoryResponse {
-    private String id;
+    private UUID id;
     private String name;
     private String imageUrl;
     private Integer position = 0;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public CategoryResponse(String id, String name, String imageUrl,
+    public CategoryResponse(UUID id, String name, String imageUrl,
                             Integer position, LocalDateTime createdAt,
                             LocalDateTime updatedAt) {
         this.id = id;
@@ -21,7 +22,7 @@ public final class CategoryResponse {
         this.updatedAt = updatedAt;
     }
 
-    public String getId() {return id;}
+    public UUID getId() {return id;}
 
     public String getName() {return name;}
 
