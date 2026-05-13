@@ -21,27 +21,15 @@ public final class CategoryResponse {
         this.updatedAt = updatedAt;
     }
 
-    public String getId() {
-        return id;
-    }
+    public String getId() {return id;}
 
-    public String getName() {
-        return name;
-    }
+    public String getName() {return name;}
 
-    public String getImageUrl() {
-        return imageUrl;
-    }
+    public String getImageUrl() {return imageUrl;}
 
-    public Integer getPosition() {
-        return position;
-    }
+    public Integer getPosition() {return position;}
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+    public LocalDateTime getCreatedAt() {return createdAt;}
 
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
+    public LocalDateTime getUpdatedAt() {return updatedAt;}
 }

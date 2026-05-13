@@ -12,43 +12,23 @@ public final class CategoryRequest {
 
     public CategoryRequest() {}
 
-    public String getName() {
-        return name;
-    }
+    public String getName() {return name;}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public void setName(String name) {this.name = name;}
 
-    public String getImageUrl() {
-        return imageUrl;
-    }
+    public String getImageUrl() {return imageUrl;}
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
+    public void setImageUrl(String imageUrl) {this.imageUrl = imageUrl;}
 
-    public Integer getPosition() {
-        return position;
-    }
+    public Integer getPosition() {return position;}
 
-    public void setPosition(Integer position) {
-        this.position = position;
-    }
+    public void setPosition(Integer position) {this.position = position;}
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+    public LocalDateTime getCreatedAt() {return createdAt;}
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
+    public void setCreatedAt(LocalDateTime createdAt) {this.createdAt = createdAt;}
 
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
+    public LocalDateTime getUpdatedAt() {return updatedAt;}
 
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
+    public void setUpdatedAt(LocalDateTime updatedAt) {this.updatedAt = updatedAt;}
 }
