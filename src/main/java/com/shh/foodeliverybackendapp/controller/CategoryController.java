@@ -31,6 +31,11 @@ public class CategoryController {
         return service.updateById(id, request);
     }
 
+    @GetMapping("/{id}")
+    public CategoryResponse getCategoryById(@PathVariable UUID id) {
+        return service.findById(id);
+    }
+
     @GetMapping
     public List<CategoryResponse> getAllCategories() {
         return service.findAll();
