@@ -3,25 +3,14 @@ package com.shh.foodeliverybackendapp.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-public final class CategoryRequest {
+public record CategoryRequest(
 
     @NotBlank
     @Size(max = 20)
-    private String name;
+    String name,
 
     @Size(max = 200)
-    private String imageUrl;
+    String imageUrl,
 
-    private Integer position = 0;
-
-    public CategoryRequest() {}
-
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-
-    public String getImageUrl() { return imageUrl; }
-    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
-
-    public Integer getPosition() { return position; }
-    public void setPosition(Integer position) { this.position = position; }
-}
+    Integer position
+){}
