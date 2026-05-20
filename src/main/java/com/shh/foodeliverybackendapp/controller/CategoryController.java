@@ -3,8 +3,8 @@ package com.shh.foodeliverybackendapp.controller;
 import com.shh.foodeliverybackendapp.dto.CategoryRequest;
 import com.shh.foodeliverybackendapp.dto.CategoryResponse;
 import com.shh.foodeliverybackendapp.service.CategoryService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,33 +15,35 @@ import java.util.UUID;
 public class CategoryController {
 
     private final CategoryService service;
-    @Autowired
+
     public CategoryController(CategoryService service) {
         this.service = service;
     }
 
     @PostMapping
-    public CategoryResponse createCategory(@Validated @RequestBody CategoryRequest request) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public CategoryResponse create(@Valid @RequestBody CategoryRequest request) {
         return service.create(request);
     }
 
-    @PutMapping("/{d}")
-    public CategoryResponse updateCategory(@PathVariable UUID id,
-                                           @RequestBody CategoryRequest request) {
+    @PutMapping("/{id}")
+    public CategoryResponse update(@PathVariable UUID id,
+                                   @Valid @RequestBody CategoryRequest request) {
         return service.updateById(id, request);
     }
 
     @GetMapping("/{id}")
-    public CategoryResponse getCategoryById(@PathVariable UUID id) {
+    public CategoryResponse getById(@PathVariable UUID id) {
         return service.findById(id);
     }
 
     @GetMapping
-    public List<CategoryResponse> getAllCategories() {
+    public List<CategoryResponse> getAll() {
         return service.findAll();
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable UUID id) {
         service.deleteById(id);
     }

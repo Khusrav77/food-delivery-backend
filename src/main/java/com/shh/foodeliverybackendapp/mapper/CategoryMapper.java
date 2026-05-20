@@ -5,11 +5,11 @@ import com.shh.foodeliverybackendapp.dto.CategoryResponse;
 import com.shh.foodeliverybackendapp.entity.product.Category;
 
 public final class CategoryMapper {
-    private CategoryMapper() {
-    }
+    private CategoryMapper() {}
 
     public static Category toEntity(CategoryRequest request) {
-         Category category = new Category(request.getName());
+         Category category = new Category();
+         category.setName(request.getName());
          category.setPosition(request.getPosition());
          return category;
     }

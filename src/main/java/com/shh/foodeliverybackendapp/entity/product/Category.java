@@ -2,9 +2,12 @@ package com.shh.foodeliverybackendapp.entity.product;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "categories")
-public final class Category extends AbstractEntity {
+public class Category extends AbstractEntity {
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -12,25 +15,18 @@ public final class Category extends AbstractEntity {
     @Column(name = "image_url")
     private String imageUrl;
 
+    @OneToMany(mappedBy = "category")
+    private List<Product> products = new ArrayList<>();
 
-    protected Category() {}
-    public Category(String name) {
-        this.name = name;
-    }
+    public Category() {}
 
-    public String getName() {
-        return name;
-    }
+    public Category(String name) {this.name = name;}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public String getName() {return name;}
 
-    public String getImageUrl() {
-        return imageUrl;
-    }
+    public void setName(String name) {this.name = name;}
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
+    public String getImageUrl() {return imageUrl;}
+
+    public void setImageUrl(String imageUrl) {this.imageUrl = imageUrl;}
 }

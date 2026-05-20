@@ -5,4 +5,4 @@ databaseChangeLog:
 
       changes:
         - sqlFile:
-            path: db/changelog/sql/V1_init_schema.sql
+            path: db/changelog/sql/V1__init_schema.sql

@@ -1,9 +1,12 @@
+
 CREATE SCHEMA IF NOT EXISTS food_delivery;
+SET search_path TO food_delivery;
+
 -- TABLE: categories
 CREATE TABLE categories (
     id UUID PRIMARY KEY,
-    name VARCHAR NOT NULL,
-    image_url VARCHAR,
+    name VARCHAR(20) NOT NULL,
+    image_url VARCHAR(200),
     position INT NOT NULL DEFAULT 0,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP NOT NULL DEFAULT NOW()
@@ -13,7 +16,7 @@ CREATE TABLE categories (
 CREATE TABLE products (
     id UUID PRIMARY KEY,
     category_id UUID NOT NULL,
-    name VARCHAR NOT NULL,
+    name VARCHAR(20) NOT NULL,
     description TEXT,
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
     position INT NOT NULL DEFAULT 0,
@@ -30,7 +33,7 @@ CREATE TABLE products (
 CREATE TABLE menu_items (
     id UUID PRIMARY KEY,
     product_id UUID NOT NULL,
-    name VARCHAR NOT NULL,
+    name VARCHAR(20) NOT NULL,
     price NUMERIC(10,2) NOT NULL,
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
     position INT NOT NULL DEFAULT 0,
@@ -47,7 +50,7 @@ CREATE TABLE menu_items (
 CREATE TABLE menu_item_images (
     id UUID PRIMARY KEY,
     menu_item_id UUID NOT NULL,
-    url VARCHAR NOT NULL,
+    url VARCHAR(200) NOT NULL,
     position INT NOT NULL DEFAULT 0,
 
     CONSTRAINT fk_menu_item_images_menu_item
@@ -60,9 +63,9 @@ CREATE TABLE menu_item_images (
 CREATE TABLE menu_item_sizes (
     id UUID PRIMARY KEY,
     menu_item_id UUID NOT NULL,
-    size_type VARCHAR NOT NULL,
+    size_type VARCHAR(20) NOT NULL,
     size_value NUMERIC NOT NULL,
-    size_unit VARCHAR NOT NULL,
+    size_unit VARCHAR(10) NOT NULL,
 
     CONSTRAINT fk_menu_item_sizes_menu_item
         FOREIGN KEY (menu_item_id)
@@ -70,12 +73,22 @@ CREATE TABLE menu_item_sizes (
             ON DELETE CASCADE
 );
 
+-- TABLE: tags
+CREATE TABLE tags (
+    id UUID PRIMARY KEY,
+    label VARCHAR(20) NOT NULL UNIQUE
+);
+
 -- TABLE: menu_item_tags (M2M)
 CREATE TABLE menu_item_tags (
+    id UUID PRIMARY KEY,
     menu_item_id UUID NOT NULL,
     tag_id UUID NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
 
-    PRIMARY KEY (menu_item_id, tag_id),
+    CONSTRAINT uq_menu_item_tag
+        UNIQUE(menu_item_id, tag_id),
 
     CONSTRAINT fk_menu_item_tags_menu_item
         FOREIGN KEY (menu_item_id)
@@ -86,12 +99,6 @@ CREATE TABLE menu_item_tags (
         FOREIGN KEY (tag_id)
             REFERENCES tags(id)
             ON DELETE CASCADE
-);
-
--- TABLE: tags
-CREATE TABLE tags (
-    id UUID PRIMARY KEY,
-    label VARCHAR NOT NULL UNIQUE
 );
 
 
