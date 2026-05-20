@@ -17,11 +17,9 @@ public final class MenuItemMapper {
     private MenuItemMapper() {}
 
     public static MenuItem toEntity(MenuItemRequest request, Product product) {
-        MenuItem menuItem = new MenuItem(request.getName(), product);
-        menuItem.setActive(request.getActive() == null ? Boolean.TRUE : request.getActive());
-        if (request.getPosition() != null) {
-            menuItem.setPosition(request.getPosition());
-        }
+        MenuItem menuItem = new MenuItem(request.name(), product);
+        menuItem.setActive(request.active());
+        menuItem.setPosition(request.position() != null ? request.position() : 0);
         return menuItem;
     }
 

@@ -18,7 +18,7 @@ public class Category extends AbstractEntity {
     @OneToMany(mappedBy = "category")
     private List<Product> products = new ArrayList<>();
 
-    public Category() {}
+    protected Category() {}
 
     public Category(String name) {this.name = name;}
 

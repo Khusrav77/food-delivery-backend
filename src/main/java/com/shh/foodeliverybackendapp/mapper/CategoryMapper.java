@@ -8,9 +8,8 @@ public final class CategoryMapper {
     private CategoryMapper() {}
 
     public static Category toEntity(CategoryRequest request) {
-         Category category = new Category();
-         category.setName(request.getName());
-         category.setPosition(request.getPosition());
+        Category category = new Category(request.name());
+         category.setPosition(request.position() != null ? request.position() : 0);
          return category;
     }
 

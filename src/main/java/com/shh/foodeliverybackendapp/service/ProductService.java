@@ -9,4 +9,5 @@ import java.util.UUID;
 public interface ProductService extends BasicService<ProductRequest, ProductResponse> {
 
     List<ProductResponse> findByCategory(UUID categoryId);
+    ProductResponse findByName(String name);
 }

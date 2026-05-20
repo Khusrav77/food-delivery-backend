@@ -14,7 +14,7 @@ public record MenuItemRequest(
         @Size(max = 20)
         String name,
 
-        boolean active,
+        Boolean active,
 
         Integer position
 

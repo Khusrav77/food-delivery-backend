@@ -29,9 +29,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryResponse create(CategoryRequest request) {
-        if (categoryRepo.existsByName(request.getName())) {
+        if (categoryRepo.existsByName(request.name())) {
             throw new EntityAlreadyExistsException(
-                    "Category with name '" + request.getName() + "' already exists");
+                    "Category with name '" + request.name() + "' already exists");
         }
         Category category = toEntity(request);
         return toResponse(categoryRepo.save(category));
@@ -57,9 +57,11 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryResponse updateById(UUID id, CategoryRequest request) {
         Category category = categoryRepo.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Category", id));
-        if (request.getName() != null) category.setName(request.getName());
-        if (request.getImageUrl() != null) category.setImageUrl(request.getImageUrl());
-        if (request.getPosition() != null) category.setPosition(request.getPosition());
+
+        category.setName(request.name() !=null ? request.name() : category.getName());
+        category.setImageUrl(request.imageUrl() !=null ? request.imageUrl() : category.getImageUrl());
+        category.setPosition(request.position() != null ? request.position() : category.getPosition());
+
         return toResponse(categoryRepo.save(category));
     }
 

@@ -18,7 +18,7 @@ public record ProductRequest(
         @Size(max = 2000)
         String description,
 
-        boolean active,
+        Boolean active,
 
         Integer position
 

@@ -7,7 +7,7 @@ import com.shh.foodeliverybackendapp.entity.product.Tag;
 public class TagMapper {
 
     public static Tag toEntity(TagRequest request) {
-        return new Tag(request.getTagName());
+        return new Tag(request.tagName());
     }
 
     public static TagResponse toResponse(Tag tag) {

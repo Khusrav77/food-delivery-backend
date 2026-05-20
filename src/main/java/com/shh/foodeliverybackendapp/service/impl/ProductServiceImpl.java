@@ -31,12 +31,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponse create(ProductRequest request) {
-        Category category = categoryRepo.findById(request.getCategoryId())
-                .orElseThrow(() -> new EntityNotFoundException("Category", request.getCategoryId()));
+        Category category = categoryRepo.findById(request.categoryId())
+                .orElseThrow(() -> new EntityNotFoundException("Category", request.categoryId()));
 
-        if (productRepo.existsByCategory_IdAndName(category.getId(), request.getName())) {
+        if (productRepo.existsByCategory_IdAndName(category.getId(), request.name())) {
             throw new EntityAlreadyExistsException(
-                    "Product with name '" + request.getName() + "' already exists in this category");
+                    "Product with name '" + request.name() + "' already exists in this category");
         }
 
         Product product = ProductMapper.toEntity(request, category);
@@ -49,6 +49,12 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepo.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Product", id));
         return ProductMapper.toResponse(product);
+    }
+    @Override
+    public ProductResponse findByName(String name) {
+       Product product = productRepo.findByName(name)
+                .orElseThrow(() -> new EntityNotFoundException("Product", name));
+       return ProductMapper.toResponse(product);
     }
 
     @Override
@@ -75,18 +81,18 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepo.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Product", id));
 
-        if (request.getCategoryId() != null
+        if (request.categoryId() != null
                 && (product.getCategoryId() == null
-                    || !request.getCategoryId().equals(product.getCategoryId().getId()))) {
-            Category newCategory = categoryRepo.findById(request.getCategoryId())
-                    .orElseThrow(() -> new EntityNotFoundException("Category", request.getCategoryId()));
+                    || !request.categoryId().equals(product.getCategoryId().getId()))) {
+            Category newCategory = categoryRepo.findById(request.categoryId())
+                    .orElseThrow(() -> new EntityNotFoundException("Category", request.categoryId()));
             product.setCategory(newCategory);
         }
 
-        if (request.getName() != null) product.setName(request.getName());
-        if (request.getDescription() != null) product.setDescription(request.getDescription());
-        if (request.getActive() != null) product.setActive(request.getActive());
-        if (request.getPosition() != null) product.setPosition(request.getPosition());
+        if (request.name() != null) product.setName(request.name());
+        if (request.description() != null) product.setDescription(request.description());
+        if (request.active() != null) product.setActive(request.active());
+        if (request.position() != null) product.setPosition(request.position());
 
         return ProductMapper.toResponse(productRepo.save(product));
     }
