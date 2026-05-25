@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: Khusrav
+
+      changes:
+        - sqlFile:
+            path: db/changelog/sql/V1__init_schema.sql
+
+  - include:
+      file: db/changelog/2026-05-20-001-fix-schema-align-with-entities.yaml
