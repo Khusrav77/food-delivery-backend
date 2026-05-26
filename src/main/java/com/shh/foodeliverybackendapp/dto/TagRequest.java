@@ -7,6 +7,7 @@ public record TagRequest(
 
         @NotBlank
         @Size(max = 20)
-        String tagName
+        String name,
+        String color
 
 ) {}

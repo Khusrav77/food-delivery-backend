@@ -5,6 +5,7 @@ import java.util.UUID;
 public record TagResponse(
 
         UUID id,
-        String name
+        String name,
+        String color
 
 ) {}

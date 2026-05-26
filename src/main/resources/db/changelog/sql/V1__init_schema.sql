@@ -1,6 +1,5 @@
-
-CREATE SCHEMA IF NOT EXISTS food_delivery;
-SET search_path TO food_delivery;
+-- liquibase formatted sql
+-- changeset shh:V1__init_schema
 
 -- TABLE: categories
 CREATE TABLE categories (

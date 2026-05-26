@@ -26,11 +26,11 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public TagResponse create(TagRequest request) {
-        if (tagRepo.existsByLabel(request.tagName())) {
+        if (tagRepo.existsByLabel(request.name())) {
             throw new EntityAlreadyExistsException(
-                    "Tag with label '" + request.tagName() + "' already exists");
+                    "Tag with label '" + request.name() + "' already exists");
         }
-        Tag tag = new Tag(request.tagName());
+        Tag tag = new Tag(request.name(), request.color());
         return TagMapper.toResponse(tagRepo.save(tag));
     }
 
@@ -54,7 +54,7 @@ public class TagServiceImpl implements TagService {
     public TagResponse updateById(UUID id, TagRequest request) {
         Tag tag = tagRepo.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Tag", id));
-        tag.setLabel(request.tagName());
+        tag.setLabel(request.name());
         return TagMapper.toResponse(tagRepo.save(tag));
     }
 

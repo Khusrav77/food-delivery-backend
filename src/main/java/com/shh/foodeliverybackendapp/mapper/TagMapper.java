@@ -7,10 +7,12 @@ import com.shh.foodeliverybackendapp.entity.product.Tag;
 public class TagMapper {
 
     public static Tag toEntity(TagRequest request) {
-        return new Tag(request.tagName());
+
+        return new Tag(request.name(), request.color());
     }
 
     public static TagResponse toResponse(Tag tag) {
-        return new TagResponse(tag.getId(), tag.getLabel());
+
+        return new TagResponse(tag.getId(), tag.getLabel(), tag.getColor());
     }
 }
