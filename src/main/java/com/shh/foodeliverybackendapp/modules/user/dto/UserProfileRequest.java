@@ -4,12 +4,14 @@ import com.shh.foodeliverybackendapp.modules.user.entity.Gender;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 
+import java.time.LocalDate;
+
 public record UserProfileRequest(
 
-        @Size(max = 20)
+        @Size(max = 50)
         String firstName,
 
-        @Size(max = 20)
+        @Size(max = 50)
         String lastName,
 
         @Email
@@ -21,6 +23,6 @@ public record UserProfileRequest(
         Gender gender,
 
         @Size(max = 20)
-        String birthDate
+        LocalDate birthDate
 
 ) {}
