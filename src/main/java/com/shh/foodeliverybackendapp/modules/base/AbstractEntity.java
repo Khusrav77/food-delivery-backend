@@ -42,10 +42,6 @@ public abstract class AbstractEntity {
 
     public UUID getId() {return id;}
 
-    public int getPosition() {return position;}
-
-    public void setPosition(int position) {this.position = position;}
-
     public Instant getCreatedAt() {return createdAt;}
 
     public Instant getUpdatedAt() {return updatedAt;}

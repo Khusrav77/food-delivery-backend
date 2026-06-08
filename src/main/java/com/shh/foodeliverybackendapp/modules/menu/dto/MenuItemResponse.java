@@ -12,7 +12,6 @@ public record MenuItemResponse(
         UUID productId,
         String name,
         boolean active,
-        Integer position,
         Instant createdAt,
         Instant updatedAt,
         List<String> imageUrls,

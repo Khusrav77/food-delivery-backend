@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 
-public record UserProfileRequest(
+public record UpdateProfileRequest(
 
         @Size(max = 50)
         String firstName,
@@ -14,15 +14,15 @@ public record UserProfileRequest(
         @Size(max = 50)
         String lastName,
 
-        @Email
-        @Size(max = 50)
-        String email,
-
-        String image,
+        String avatarUrl,
 
         Gender gender,
 
         @Size(max = 20)
-        LocalDate birthDate
+        LocalDate birthDate,
+
+        @Email
+        @Size(max = 50)
+        String email
 
 ) {}
