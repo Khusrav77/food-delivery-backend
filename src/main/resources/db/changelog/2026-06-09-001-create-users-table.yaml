@@ -1,0 +1,47 @@
+
+
+databaseChangeLog:
+
+  - changeSet:
+      id: 2026-06-09-001-create-users-table
+      author: shh
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: first_name
+                  type: varchar(50)
+              - column:
+                  name: last_name
+                  type: varchar(50)
+              - column:
+                  name: avatar_url
+                  type: text
+              - column:
+                  name: gender
+                  type: varchar(10)
+              - column:
+                  name: birth_date
+                  type: date
+              - column:
+                  name: phone
+                  type: varchar(11)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: email
+                  type: varchar(50)
+                  constraints:
+                    unique: true
+              - column:
+                  name: role
+                  type: varchar(20)
+                  defaultValue: USER

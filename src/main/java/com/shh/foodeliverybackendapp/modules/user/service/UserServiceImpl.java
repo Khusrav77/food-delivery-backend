@@ -4,12 +4,17 @@ package com.shh.foodeliverybackendapp.modules.user.service;
 import com.shh.foodeliverybackendapp.modules.user.dto.UpdateProfileRequest;
 import com.shh.foodeliverybackendapp.modules.user.dto.UserResponse;
 import com.shh.foodeliverybackendapp.modules.user.entity.User;
+import com.shh.foodeliverybackendapp.modules.user.repository.UserRopositotory;
 
 import java.util.UUID;
 
 public class UserServiceImpl implements UserService{
+
+    private UserRopositotory userRepo;
+
     @Override
     public UserResponse getCurrentUser() {
+
         return null;
     }
 
