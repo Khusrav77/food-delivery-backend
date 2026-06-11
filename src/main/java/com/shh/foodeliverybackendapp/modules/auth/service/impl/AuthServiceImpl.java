@@ -1,10 +1,7 @@
 package com.shh.foodeliverybackendapp.modules.auth.service.impl;
 
 import com.shh.foodeliverybackendapp.exception.InvalidOtpException;
-import com.shh.foodeliverybackendapp.modules.auth.dto.AuthResponse;
-import com.shh.foodeliverybackendapp.modules.auth.dto.TokenRefreshRequest;
-import com.shh.foodeliverybackendapp.modules.auth.dto.UserVerifyResponse;
-import com.shh.foodeliverybackendapp.modules.auth.dto.VerifyOtpRequest;
+import com.shh.foodeliverybackendapp.modules.auth.dto.*;
 import com.shh.foodeliverybackendapp.modules.security.JwtService;
 import com.shh.foodeliverybackendapp.modules.auth.service.AuthService;
 import com.shh.foodeliverybackendapp.modules.auth.service.OtpService;
@@ -29,8 +26,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void sendOtp(String phone) {
-        otpService.sendCode(phone);
+    public void sendOtp(SendOtpRequest request) {
+        otpService.sendCode(request.phone());
     }
 
     @Override
