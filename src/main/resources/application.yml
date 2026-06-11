@@ -5,3 +5,7 @@ spring:
     password: postgres
   liquibase:
     change-log: classpath:db/changelog/changelog-master.yaml
+jwt:
+  secret-key: mySuperSecretJwtKeyForFoodDeliveryApplication2026WithExtraSymbols
+  access-token-expiration: 30m
+  refresh-token-expiration: 30d

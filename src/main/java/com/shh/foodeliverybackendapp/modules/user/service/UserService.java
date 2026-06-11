@@ -11,11 +11,11 @@ public interface UserService {
 
     UserResponse findById(UUID id);
 
-    UserResponse updateProfile(
-            UpdateProfileRequest request
-    );
+    User getUserById(UUID id);
 
-    User findByPhone(String phone);
+    UserResponse updateProfile(UpdateProfileRequest request);
+
+    User findOrCreateByPhone(String phone);
 
     boolean existsByEmail(String email);
 }

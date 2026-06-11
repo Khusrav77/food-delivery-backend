@@ -8,4 +8,5 @@ public record UserVerifyResponse(
         UUID uuid,
         String phone,
         Role role
-) {}
+)
+{}

@@ -1,6 +1,7 @@
 package com.shh.foodeliverybackendapp.modules.auth.dto;
 
-public record VerifyCodeRequest(
+public record VerifyOtpRequest(
         String phone,
         String code
-) {}
+)
+{}

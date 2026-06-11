@@ -1,5 +1,11 @@
 package com.shh.foodeliverybackendapp.modules.auth.service;
 
-public interface AuthService {
+import com.shh.foodeliverybackendapp.modules.auth.dto.AuthResponse;
+import com.shh.foodeliverybackendapp.modules.auth.dto.TokenRefreshRequest;
+import com.shh.foodeliverybackendapp.modules.auth.dto.VerifyOtpRequest;
 
+public interface AuthService {
+    void sendOtp(String phone);
+    AuthResponse verifyOtp(VerifyOtpRequest request);
+    AuthResponse refresh(TokenRefreshRequest request);
 }

@@ -1,5 +1,6 @@
-package com.shh.foodeliverybackendapp.modules.auth.service;
+package com.shh.foodeliverybackendapp.modules.auth.service.impl;
 
+import com.shh.foodeliverybackendapp.modules.auth.service.OtpService;
 import com.shh.foodeliverybackendapp.modules.auth.storage.OtpStorage;
 import org.springframework.stereotype.Service;
 
