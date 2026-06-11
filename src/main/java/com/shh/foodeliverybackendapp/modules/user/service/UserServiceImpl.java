@@ -1,11 +1,14 @@
 package com.shh.foodeliverybackendapp.modules.user.service;
 
 
+import com.shh.foodeliverybackendapp.exception.EntityAlreadyExistsException;
 import com.shh.foodeliverybackendapp.exception.EntityNotFoundException;
 import com.shh.foodeliverybackendapp.modules.user.dto.UpdateProfileRequest;
 import com.shh.foodeliverybackendapp.modules.user.dto.UserResponse;
 import com.shh.foodeliverybackendapp.modules.user.entity.User;
+import com.shh.foodeliverybackendapp.modules.user.mapper.UserMapper;
 import com.shh.foodeliverybackendapp.modules.user.repository.UserRopositotory;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -21,13 +24,8 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserResponse getCurrentUser() {
-
-        return null;
-    }
-
-    @Override
-    public UserResponse findById(UUID id) {
-        return null;
+        User userId = getCurrentUserEntity();
+        return UserMapper.toResponse(userId);
     }
 
     @Override
@@ -38,7 +36,17 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserResponse updateProfile(UpdateProfileRequest request) {
-        return null;
+        User user = getCurrentUserEntity();
+
+        if (request.email() != null && !request.email().equals(user.getEmail())) {
+            if (existsByEmail(request.email())) {
+                throw new EntityAlreadyExistsException("Email already in use: " + request.email());
+            }
+        }
+
+        UserMapper.updateUser(user, request);
+        User saved = userRepo.save(user);
+        return UserMapper.toResponse(saved);
     }
 
     @Override
@@ -49,6 +57,11 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public boolean existsByEmail(String email) {
-        return false;
+        return userRepo.existsByEmail(email);
+    }
+
+    private User getCurrentUserEntity() {
+        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+        return getUserById(UUID.fromString(userId));
     }
 }

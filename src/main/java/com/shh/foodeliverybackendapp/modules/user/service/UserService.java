@@ -9,8 +9,6 @@ import java.util.UUID;
 public interface UserService {
     UserResponse getCurrentUser();
 
-    UserResponse findById(UUID id);
-
     User getUserById(UUID id);
 
     UserResponse updateProfile(UpdateProfileRequest request);
