@@ -2,6 +2,7 @@ package com.shh.foodeliverybackendapp.web;
 
 import com.shh.foodeliverybackendapp.exception.EntityAlreadyExistsException;
 import com.shh.foodeliverybackendapp.exception.EntityNotFoundException;
+import com.shh.foodeliverybackendapp.exception.InvalidOtpException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -42,6 +43,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleAlreadyExists(EntityAlreadyExistsException ex,
                                                              HttpServletRequest req) {
         return build(HttpStatus.CONFLICT, ex.getMessage(), req);
+    }
+
+    @ExceptionHandler(InvalidOtpException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidOtpException (InvalidOtpException ex, HttpServletRequest req) {
+        return build(HttpStatus.BAD_REQUEST, ex.getMessage(), req);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

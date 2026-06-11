@@ -15,10 +15,7 @@ public record UpdateProfileRequest(
         String lastName,
 
         String avatarUrl,
-
         Gender gender,
-
-        @Size(max = 20)
         LocalDate birthDate,
 
         @Email

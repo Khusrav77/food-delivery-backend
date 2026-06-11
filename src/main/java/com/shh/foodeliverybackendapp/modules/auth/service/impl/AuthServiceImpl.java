@@ -1,5 +1,6 @@
 package com.shh.foodeliverybackendapp.modules.auth.service.impl;
 
+import com.shh.foodeliverybackendapp.exception.InvalidOtpException;
 import com.shh.foodeliverybackendapp.modules.auth.dto.AuthResponse;
 import com.shh.foodeliverybackendapp.modules.auth.dto.TokenRefreshRequest;
 import com.shh.foodeliverybackendapp.modules.auth.dto.UserVerifyResponse;
@@ -36,7 +37,7 @@ public class AuthServiceImpl implements AuthService {
     public AuthResponse verifyOtp(VerifyOtpRequest request) {
         boolean isValid = otpService.verifyCode(request.phone(), request.code());
         if (!isValid) {
-            throw new IllegalArgumentException("Invalid OTP code");
+            throw new InvalidOtpException("Invalid OTP code");
         }
 
         User user = userService.findOrCreateByPhone(request.phone());
