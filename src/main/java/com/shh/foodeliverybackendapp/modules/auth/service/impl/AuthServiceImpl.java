@@ -4,7 +4,7 @@ import com.shh.foodeliverybackendapp.modules.auth.dto.AuthResponse;
 import com.shh.foodeliverybackendapp.modules.auth.dto.TokenRefreshRequest;
 import com.shh.foodeliverybackendapp.modules.auth.dto.UserVerifyResponse;
 import com.shh.foodeliverybackendapp.modules.auth.dto.VerifyOtpRequest;
-import com.shh.foodeliverybackendapp.modules.auth.security.JwtService;
+import com.shh.foodeliverybackendapp.modules.security.JwtService;
 import com.shh.foodeliverybackendapp.modules.auth.service.AuthService;
 import com.shh.foodeliverybackendapp.modules.auth.service.OtpService;
 import com.shh.foodeliverybackendapp.modules.user.entity.User;

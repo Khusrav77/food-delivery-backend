@@ -1,4 +1,4 @@
-package com.shh.foodeliverybackendapp.modules.auth.security;
+package com.shh.foodeliverybackendapp.modules.security;
 
 import com.shh.foodeliverybackendapp.modules.user.entity.Role;
 import io.jsonwebtoken.Claims;
