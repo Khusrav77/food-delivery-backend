@@ -1,4 +1,4 @@
-package com.shh.foodeliverybackendapp.modules.auth.service;
+package com.shh.foodeliverybackendapp.modules.auth.storage;
 
 import java.time.Duration;
 import java.util.Optional;

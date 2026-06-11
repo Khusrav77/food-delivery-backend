@@ -1,6 +1,7 @@
-package com.shh.foodeliverybackendapp.modules.auth.service;
+package com.shh.foodeliverybackendapp.modules.auth.storage;
 
 import com.shh.foodeliverybackendapp.modules.auth.entity.OtpData;
+import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -8,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Service
 public class InMemoryOtpStorage implements OtpStorage {
 
     private final Map<String, OtpData> otpStorage = new ConcurrentHashMap<>();
