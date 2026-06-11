@@ -1,8 +1,8 @@
 package com.shh.foodeliverybackendapp.modules.menu.service;
 
 import com.shh.foodeliverybackendapp.modules.base.BasicService;
-import com.shh.foodeliverybackendapp.modules.menu.dto.ProductRequest;
-import com.shh.foodeliverybackendapp.modules.menu.dto.ProductResponse;
+import com.shh.foodeliverybackendapp.modules.menu.dto.request.ProductRequest;
+import com.shh.foodeliverybackendapp.modules.menu.dto.response.ProductResponse;
 
 import java.util.List;
 import java.util.UUID;

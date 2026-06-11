@@ -1,5 +1,6 @@
 package com.shh.foodeliverybackendapp.modules.security;
 
+import com.shh.foodeliverybackendapp.config.JwtProperties;
 import com.shh.foodeliverybackendapp.modules.user.entity.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;

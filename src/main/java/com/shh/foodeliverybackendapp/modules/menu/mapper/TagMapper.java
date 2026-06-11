@@ -1,7 +1,7 @@
 package com.shh.foodeliverybackendapp.modules.menu.mapper;
 
-import com.shh.foodeliverybackendapp.modules.menu.dto.TagRequest;
-import com.shh.foodeliverybackendapp.modules.menu.dto.TagResponse;
+import com.shh.foodeliverybackendapp.modules.menu.dto.request.TagRequest;
+import com.shh.foodeliverybackendapp.modules.menu.dto.response.TagResponse;
 import com.shh.foodeliverybackendapp.modules.menu.entity.Tag;
 
 public class TagMapper {

@@ -1,7 +1,7 @@
 package com.shh.foodeliverybackendapp.modules.menu.controller;
 
-import com.shh.foodeliverybackendapp.modules.menu.dto.MenuItemImageRequest;
-import com.shh.foodeliverybackendapp.modules.menu.dto.MenuItemImageResponse;
+import com.shh.foodeliverybackendapp.modules.menu.dto.request.MenuItemImageRequest;
+import com.shh.foodeliverybackendapp.modules.menu.dto.response.MenuItemImageResponse;
 import com.shh.foodeliverybackendapp.modules.menu.service.MenuItemImageService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

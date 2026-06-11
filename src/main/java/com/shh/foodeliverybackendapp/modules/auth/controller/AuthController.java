@@ -1,6 +1,9 @@
 package com.shh.foodeliverybackendapp.modules.auth.controller;
 
-import com.shh.foodeliverybackendapp.modules.auth.dto.*;
+import com.shh.foodeliverybackendapp.modules.auth.dto.request.SendOtpRequest;
+import com.shh.foodeliverybackendapp.modules.auth.dto.request.TokenRefreshRequest;
+import com.shh.foodeliverybackendapp.modules.auth.dto.request.VerifyOtpRequest;
+import com.shh.foodeliverybackendapp.modules.auth.dto.response.AuthResponse;
 import com.shh.foodeliverybackendapp.modules.auth.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;

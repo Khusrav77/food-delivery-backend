@@ -1,4 +1,4 @@
-package com.shh.foodeliverybackendapp.modules.auth.service;
+package com.shh.foodeliverybackendapp.modules.otp.service;
 
 public interface OtpService {
     void sendCode(String phone);

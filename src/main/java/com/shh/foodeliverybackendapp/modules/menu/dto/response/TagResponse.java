@@ -1,4 +1,4 @@
-package com.shh.foodeliverybackendapp.modules.menu.dto;
+package com.shh.foodeliverybackendapp.modules.menu.dto.response;
 
 import java.util.UUID;
 

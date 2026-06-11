@@ -1,4 +1,4 @@
-package com.shh.foodeliverybackendapp.modules.menu.dto;
+package com.shh.foodeliverybackendapp.modules.menu.dto.response;
 
 import java.math.BigDecimal;
 import java.time.Instant;

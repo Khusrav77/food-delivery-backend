@@ -1,4 +1,4 @@
-package com.shh.foodeliverybackendapp.web;
+package com.shh.foodeliverybackendapp.exception;
 
 import java.time.Instant;
 import java.util.List;

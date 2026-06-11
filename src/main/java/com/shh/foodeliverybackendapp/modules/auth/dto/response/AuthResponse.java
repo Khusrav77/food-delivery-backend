@@ -1,4 +1,4 @@
-package com.shh.foodeliverybackendapp.modules.auth.dto;
+package com.shh.foodeliverybackendapp.modules.auth.dto.response;
 
 public record AuthResponse(
         String accessToken,

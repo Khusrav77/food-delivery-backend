@@ -1,4 +1,4 @@
-package com.shh.foodeliverybackendapp.modules.menu.dto;
+package com.shh.foodeliverybackendapp.modules.menu.dto.response;
 
 import com.shh.foodeliverybackendapp.modules.menu.entity.SizeLabel;
 import com.shh.foodeliverybackendapp.modules.menu.entity.SizeUnit;

@@ -1,7 +1,7 @@
 package com.shh.foodeliverybackendapp.modules.menu.mapper;
 
-import com.shh.foodeliverybackendapp.modules.menu.dto.CategoryRequest;
-import com.shh.foodeliverybackendapp.modules.menu.dto.CategoryResponse;
+import com.shh.foodeliverybackendapp.modules.menu.dto.request.CategoryRequest;
+import com.shh.foodeliverybackendapp.modules.menu.dto.response.CategoryResponse;
 import com.shh.foodeliverybackendapp.modules.menu.entity.Category;
 
 public final class CategoryMapper {

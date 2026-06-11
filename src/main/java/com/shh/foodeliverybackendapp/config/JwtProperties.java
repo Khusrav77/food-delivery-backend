@@ -1,4 +1,4 @@
-package com.shh.foodeliverybackendapp.modules.security;
+package com.shh.foodeliverybackendapp.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

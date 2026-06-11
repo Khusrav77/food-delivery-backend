@@ -1,6 +1,6 @@
 package com.shh.foodeliverybackendapp.modules.user.mapper;
 
-import com.shh.foodeliverybackendapp.modules.auth.dto.UserVerifyResponse;
+import com.shh.foodeliverybackendapp.modules.auth.dto.response.UserVerifyResponse;
 import com.shh.foodeliverybackendapp.modules.user.dto.UpdateProfileRequest;
 import com.shh.foodeliverybackendapp.modules.user.dto.UserResponse;
 import com.shh.foodeliverybackendapp.modules.user.entity.User;

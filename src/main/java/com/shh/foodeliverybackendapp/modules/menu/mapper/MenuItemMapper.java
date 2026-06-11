@@ -1,7 +1,7 @@
 package com.shh.foodeliverybackendapp.modules.menu.mapper;
 
-import com.shh.foodeliverybackendapp.modules.menu.dto.MenuItemRequest;
-import com.shh.foodeliverybackendapp.modules.menu.dto.MenuItemResponse;
+import com.shh.foodeliverybackendapp.modules.menu.dto.request.MenuItemRequest;
+import com.shh.foodeliverybackendapp.modules.menu.dto.response.MenuItemResponse;
 import com.shh.foodeliverybackendapp.modules.menu.entity.MenuItem;
 import com.shh.foodeliverybackendapp.modules.menu.entity.MenuItemImage;
 import com.shh.foodeliverybackendapp.modules.menu.entity.MenuItemSize;

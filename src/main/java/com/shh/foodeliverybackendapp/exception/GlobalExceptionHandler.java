@@ -1,8 +1,5 @@
-package com.shh.foodeliverybackendapp.web;
+package com.shh.foodeliverybackendapp.exception;
 
-import com.shh.foodeliverybackendapp.exception.EntityAlreadyExistsException;
-import com.shh.foodeliverybackendapp.exception.EntityNotFoundException;
-import com.shh.foodeliverybackendapp.exception.InvalidOtpException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;

@@ -1,10 +1,14 @@
 package com.shh.foodeliverybackendapp.modules.auth.service.impl;
 
 import com.shh.foodeliverybackendapp.exception.InvalidOtpException;
-import com.shh.foodeliverybackendapp.modules.auth.dto.*;
+import com.shh.foodeliverybackendapp.modules.auth.dto.request.SendOtpRequest;
+import com.shh.foodeliverybackendapp.modules.auth.dto.request.TokenRefreshRequest;
+import com.shh.foodeliverybackendapp.modules.auth.dto.request.VerifyOtpRequest;
+import com.shh.foodeliverybackendapp.modules.auth.dto.response.AuthResponse;
+import com.shh.foodeliverybackendapp.modules.auth.dto.response.UserVerifyResponse;
 import com.shh.foodeliverybackendapp.modules.security.JwtService;
 import com.shh.foodeliverybackendapp.modules.auth.service.AuthService;
-import com.shh.foodeliverybackendapp.modules.auth.service.OtpService;
+import com.shh.foodeliverybackendapp.modules.otp.service.OtpService;
 import com.shh.foodeliverybackendapp.modules.user.entity.User;
 import com.shh.foodeliverybackendapp.modules.user.mapper.UserMapper;
 import com.shh.foodeliverybackendapp.modules.user.service.UserService;

@@ -1,6 +1,6 @@
-package com.shh.foodeliverybackendapp.modules.auth.storage;
+package com.shh.foodeliverybackendapp.modules.otp.storage;
 
-import com.shh.foodeliverybackendapp.modules.auth.entity.OtpData;
+import com.shh.foodeliverybackendapp.modules.auth.dto.OtpData;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;

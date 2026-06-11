@@ -1,4 +1,4 @@
-package com.shh.foodeliverybackendapp.modules.auth.entity;
+package com.shh.foodeliverybackendapp.modules.auth.dto;
 
 import java.time.LocalDateTime;
 

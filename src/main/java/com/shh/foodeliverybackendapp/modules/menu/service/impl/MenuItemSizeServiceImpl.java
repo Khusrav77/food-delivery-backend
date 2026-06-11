@@ -1,7 +1,7 @@
 package com.shh.foodeliverybackendapp.modules.menu.service.impl;
 
-import com.shh.foodeliverybackendapp.modules.menu.dto.MenuItemSizeRequest;
-import com.shh.foodeliverybackendapp.modules.menu.dto.MenuItemSizeResponse;
+import com.shh.foodeliverybackendapp.modules.menu.dto.request.MenuItemSizeRequest;
+import com.shh.foodeliverybackendapp.modules.menu.dto.response.MenuItemSizeResponse;
 import com.shh.foodeliverybackendapp.modules.menu.entity.MenuItem;
 import com.shh.foodeliverybackendapp.modules.menu.entity.MenuItemSize;
 import com.shh.foodeliverybackendapp.exception.EntityNotFoundException;

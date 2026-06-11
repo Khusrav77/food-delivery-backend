@@ -1,7 +1,7 @@
 package com.shh.foodeliverybackendapp.modules.menu.service.impl;
 
-import com.shh.foodeliverybackendapp.modules.menu.dto.MenuItemImageRequest;
-import com.shh.foodeliverybackendapp.modules.menu.dto.MenuItemImageResponse;
+import com.shh.foodeliverybackendapp.modules.menu.dto.request.MenuItemImageRequest;
+import com.shh.foodeliverybackendapp.modules.menu.dto.response.MenuItemImageResponse;
 import com.shh.foodeliverybackendapp.modules.menu.entity.MenuItem;
 import com.shh.foodeliverybackendapp.modules.menu.entity.MenuItemImage;
 import com.shh.foodeliverybackendapp.exception.EntityAlreadyExistsException;

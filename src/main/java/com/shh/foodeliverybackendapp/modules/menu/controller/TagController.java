@@ -1,7 +1,7 @@
 package com.shh.foodeliverybackendapp.modules.menu.controller;
 
-import com.shh.foodeliverybackendapp.modules.menu.dto.TagRequest;
-import com.shh.foodeliverybackendapp.modules.menu.dto.TagResponse;
+import com.shh.foodeliverybackendapp.modules.menu.dto.request.TagRequest;
+import com.shh.foodeliverybackendapp.modules.menu.dto.response.TagResponse;
 import com.shh.foodeliverybackendapp.modules.menu.service.TagService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

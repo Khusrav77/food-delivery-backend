@@ -1,4 +1,4 @@
-package com.shh.foodeliverybackendapp.modules.auth.dto;
+package com.shh.foodeliverybackendapp.modules.auth.dto.response;
 
 import com.shh.foodeliverybackendapp.modules.user.entity.Role;
 

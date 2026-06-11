@@ -1,4 +1,4 @@
-package com.shh.foodeliverybackendapp.modules.menu.dto;
+package com.shh.foodeliverybackendapp.modules.menu.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
