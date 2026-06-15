@@ -1,6 +1,7 @@
 package com.shh.foodeliverybackendapp.modules.auth.service.impl;
 
 import com.shh.foodeliverybackendapp.exception.InvalidOtpException;
+import com.shh.foodeliverybackendapp.exception.InvalidRefreshTokenException;
 import com.shh.foodeliverybackendapp.modules.auth.dto.request.SendOtpRequest;
 import com.shh.foodeliverybackendapp.modules.auth.dto.request.TokenRefreshRequest;
 import com.shh.foodeliverybackendapp.modules.auth.dto.request.VerifyOtpRequest;
@@ -54,7 +55,7 @@ public class AuthServiceImpl implements AuthService {
     public AuthResponse refresh(TokenRefreshRequest request) {
         String token = request.refreshToken();
         if (!jwtService.isTokenValid(token) || !jwtService.isRefreshToken(token)) {
-            throw new IllegalArgumentException("Invalid refresh token");
+            throw new InvalidRefreshTokenException("Invalid refresh token");
         }
 
         UUID userId = jwtService.extractUserId(token);

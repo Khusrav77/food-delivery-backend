@@ -21,15 +21,13 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http)
-            throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
                 .csrf(AbstractHttpConfigurer::disable)
 
                 .sessionManagement(session ->
-                        session.sessionCreationPolicy(
-                                SessionCreationPolicy.STATELESS))
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 .authorizeHttpRequests(auth -> auth
 
@@ -42,9 +40,7 @@ public class SecurityConfig {
                                 "/api/v1/tags/**").permitAll()
 
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-
                         .requestMatchers("/api/v1/profile/**").authenticated()
-
                         .anyRequest().authenticated()
                 )
 
