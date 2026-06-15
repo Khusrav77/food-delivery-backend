@@ -29,6 +29,7 @@ public class OtpServiceImpl implements OtpService {
 
         otpStorage.save(phone, code, Duration.ofMinutes(3));
         log.info("OTP saved for phone={}, ttl={} minutes", maskPhone(phone), 3);
+        log.debug("Generated OTP code: {}", code);
     }
 
     @Override

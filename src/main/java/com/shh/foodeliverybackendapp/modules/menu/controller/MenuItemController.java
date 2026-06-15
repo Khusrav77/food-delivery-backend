@@ -31,10 +31,6 @@ public class MenuItemController {
         return menuItemService.findById(id);
     }
 
-    /**
-     * Lists menu items. When {@code productId} is provided, filters to that
-     * product's menu items.
-     */
     @GetMapping
     public List<MenuItemResponse> list(@RequestParam(required = false) UUID productId) {
         if (productId != null) {

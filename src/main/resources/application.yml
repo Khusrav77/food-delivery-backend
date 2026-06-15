@@ -9,3 +9,7 @@ jwt:
   secret-key: mySuperSecretJwtKeyForFoodDeliveryApplication2026WithExtraSymbols
   access-token-expiration: 30m
   refresh-token-expiration: 30d
+
+logging:
+  level:
+    com.shh.foodeliverybackendapp.modules.otp: DEBUG
