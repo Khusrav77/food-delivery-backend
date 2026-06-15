@@ -1,3 +1,5 @@
+
+
 -- liquibase formatted sql
 -- changeset shh:V1__init_schema
 
