@@ -14,10 +14,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
-
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
+
 
 /**
  * Translates exceptions into a single ErrorResponse shape.
@@ -59,44 +57,51 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleBodyValidation(MethodArgumentNotValidException ex,
-                                                              HttpServletRequest req) {
-        List<Map<String, String>> fieldErrors = ex.getBindingResult().getFieldErrors().stream()
-                .map(fe -> {
-                    Map<String, String> m = new LinkedHashMap<>();
-                    m.put("field", fe.getField());
-                    m.put("message", fe.getDefaultMessage() == null ? "invalid" : fe.getDefaultMessage());
-                    return m;
-                })
+    public ResponseEntity<ErrorResponse> handleBodyValidation(
+            MethodArgumentNotValidException ex,
+            HttpServletRequest req) {
+
+        List<FieldErrorResponse> fieldErrors = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(fe -> new FieldErrorResponse(
+                        fe.getField(),
+                        fe.getDefaultMessage() == null
+                                ? "invalid"
+                                : fe.getDefaultMessage()
+                ))
                 .toList();
+
         HttpStatus status = HttpStatus.BAD_REQUEST;
+
         return ResponseEntity.status(status).body(
                 ErrorResponse.ofValidation(
                         status.value(),
                         status.getReasonPhrase(),
                         "Validation failed",
                         req.getRequestURI(),
-                        fieldErrors
-                )
-        );
+                        fieldErrors));
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ErrorResponse> handleConstraintViolation(ConstraintViolationException ex,
-                                                                   HttpServletRequest req) {
-        List<Map<String, String>> fieldErrors = ex.getConstraintViolations().stream()
+    public ResponseEntity<ErrorResponse> handleConstraintViolation(
+            ConstraintViolationException ex,
+            HttpServletRequest req) {
+
+        List<FieldErrorResponse> fieldErrors = ex.getConstraintViolations()
+                .stream()
                 .map(this::toFieldError)
                 .toList();
+
         HttpStatus status = HttpStatus.BAD_REQUEST;
+
         return ResponseEntity.status(status).body(
                 ErrorResponse.ofValidation(
                         status.value(),
                         status.getReasonPhrase(),
                         "Validation failed",
                         req.getRequestURI(),
-                        fieldErrors
-                )
-        );
+                        fieldErrors));
     }
 
     @ExceptionHandler({HttpMessageNotReadableException.class, MethodArgumentTypeMismatchException.class})
@@ -128,16 +133,21 @@ public class GlobalExceptionHandler {
 
     // --- helpers ---
 
-    private ResponseEntity<ErrorResponse> build(HttpStatus status, String message, HttpServletRequest req) {
+    private ResponseEntity<ErrorResponse> build(HttpStatus status,
+                                                String message,
+                                                HttpServletRequest req) {
         return ResponseEntity.status(status).body(
-                ErrorResponse.of(status.value(), status.getReasonPhrase(), message, req.getRequestURI())
-        );
+                ErrorResponse.of(
+                        status.value(),
+                        status.getReasonPhrase(),
+                        message,
+                        req.getRequestURI()));
     }
 
-    private Map<String, String> toFieldError(ConstraintViolation<?> v) {
-        Map<String, String> m = new LinkedHashMap<>();
-        m.put("field", v.getPropertyPath().toString());
-        m.put("message", v.getMessage());
-        return m;
+    private FieldErrorResponse toFieldError(ConstraintViolation<?> violation) {
+        return new FieldErrorResponse(
+                violation.getPropertyPath().toString(),
+                violation.getMessage()
+        );
     }
 }

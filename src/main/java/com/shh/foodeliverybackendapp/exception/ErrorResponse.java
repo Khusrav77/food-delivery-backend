@@ -18,17 +18,34 @@ public record ErrorResponse(
         String error,
         String message,
         String path,
-        List<Map<String, String>> fieldErrors
+        List<FieldErrorResponse> fieldErrors
 ) {
-    public static ErrorResponse of(int status, String error, String message, String path) {
-        return new ErrorResponse(Instant.now(), status, error, message, path, null);
+    public static ErrorResponse of(
+            int status,
+            String error,
+            String message,
+            String path) {
+        return new ErrorResponse(
+                Instant.now(),
+                status,
+                error,
+                message,
+                path,
+                null );
     }
 
-    public static ErrorResponse ofValidation(int status,
-                                             String error,
-                                             String message,
-                                             String path,
-                                             List<Map<String, String>> fieldErrors) {
-        return new ErrorResponse(Instant.now(), status, error, message, path, fieldErrors);
+    public static ErrorResponse ofValidation(
+            int status,
+            String error,
+            String message,
+            String path,
+            List<FieldErrorResponse> fieldErrors) {
+        return new ErrorResponse(
+                Instant.now(),
+                status,
+                error,
+                message,
+                path,
+                fieldErrors );
     }
 }
