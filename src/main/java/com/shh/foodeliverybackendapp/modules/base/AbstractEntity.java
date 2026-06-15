@@ -28,18 +28,6 @@ public abstract class AbstractEntity {
 
     protected AbstractEntity() {}
 
-    @PrePersist
-    protected void onCreate() {
-        Instant now = Instant.now();
-        this.createdAt = now;
-        this.updatedAt = now;
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = Instant.now();
-    }
-
     public UUID getId() {return id;}
 
     public Instant getCreatedAt() {return createdAt;}
