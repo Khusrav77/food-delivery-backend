@@ -1,7 +1,5 @@
 
-
 databaseChangeLog:
-
   - changeSet:
       id: 2026-06-09-001-create-users-table
       author: shh
