@@ -9,5 +9,4 @@ public record JwtProperties(
         String secretKey,
         Duration accessTokenExpiration,
         Duration refreshTokenExpiration
-) {
-}
+) {}
