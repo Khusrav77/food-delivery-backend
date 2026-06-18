@@ -49,7 +49,7 @@ public class UserAddress extends AbstractEntity {
     @Column(name = "is_default", nullable = false)
     private Boolean isDefault = false;
 
-    protected UserAddress() {}
+    public UserAddress() {}
 
     public User getUser() {
         return user;
