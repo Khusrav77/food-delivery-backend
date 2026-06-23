@@ -1,0 +1,119 @@
+databaseChangeLog:
+
+  # ── menu_items ──────────────────────────────────────────────────────────────
+  # The 'price' column was in the original SQL but is NOT mapped in the MenuItem
+  # entity — price lives on MenuItemSize, not MenuItem. Dropping it here.
+  - changeSet:
+      id: 2026-05-20-001-drop-menu-items-price
+      author: shh
+      changes:
+        - dropColumn:
+            tableName: menu_items
+            columnName: price
+
+  # ── menu_item_sizes ──────────────────────────────────────────────────────────
+  # Original SQL had 'size_type' but the entity column is 'label'.
+  # Also missing: price, position, created_at, updated_at.
+  - changeSet:
+      id: 2026-05-20-002-fix-menu-item-sizes
+      author: shh
+      changes:
+        - renameColumn:
+            tableName: menu_item_sizes
+            oldColumnName: size_type
+            newColumnName: label
+            columnDataType: varchar(20)
+
+        - addColumn:
+            tableName: menu_item_sizes
+            columns:
+              - column:
+                  name: price
+                  type: numeric(10,2)
+                  constraints:
+                    nullable: false
+                  defaultValueNumeric: 0
+              - column:
+                  name: position
+                  type: int
+                  constraints:
+                    nullable: false
+                  defaultValueNumeric: 0
+              - column:
+                  name: created_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+                  defaultValueDate: now()
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+                  defaultValueDate: now()
+
+  # ── menu_item_images ─────────────────────────────────────────────────────────
+  # MenuItemImage extends AbstractEntity → needs created_at and updated_at.
+  - changeSet:
+      id: 2026-05-20-003-fix-menu-item-images
+      author: shh
+      changes:
+        - addColumn:
+            tableName: menu_item_images
+            columns:
+              - column:
+                  name: created_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+                  defaultValueDate: now()
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+                  defaultValueDate: now()
+
+  # ── tags ─────────────────────────────────────────────────────────────────────
+  # Tag extends AbstractEntity → needs position, created_at, updated_at.
+  - changeSet:
+      id: 2026-05-20-004-fix-tags
+      author: shh
+      changes:
+        - addColumn:
+            tableName: tags
+            columns:
+              - column:
+                  name: position
+                  type: int
+                  constraints:
+                    nullable: false
+                  defaultValueNumeric: 0
+              - column:
+                  name: created_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+                  defaultValueDate: now()
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+                  defaultValueDate: now()
+
+  # ── menu_item_tags ────────────────────────────────────────────────────────────
+  # MenuItemTags extends AbstractEntity → needs position.
+  - changeSet:
+      id: 2026-05-20-005-fix-menu-item-tags
+      author: shh
+      changes:
+        - addColumn:
+            tableName: menu_item_tags
+            columns:
+              - column:
+                  name: position
+                  type: int
+                  constraints:
+                    nullable: false
+                  defaultValueNumeric: 0
