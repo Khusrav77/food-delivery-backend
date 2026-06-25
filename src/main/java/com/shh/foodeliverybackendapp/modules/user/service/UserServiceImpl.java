@@ -34,10 +34,7 @@ public class UserServiceImpl implements UserService{
     @Override
     public User getUserById(UUID id) {
         return userRepo.findById(id)
-                .orElseThrow(() -> {
-                    log.warn("User not found: userId={}", id);
-                    return new EntityNotFoundException("User", id);
-                });
+                .orElseThrow(() -> {throw  new EntityNotFoundException("User", id);});
     }
 
     @Override
@@ -46,7 +43,6 @@ public class UserServiceImpl implements UserService{
 
         if (request.email() != null && !request.email().equals(user.getEmail())) {
             if (existsByEmail(request.email())) {
-                log.warn("Email already in use: userId={}", user.getId());
                 throw new EntityAlreadyExistsException("Email already in use");
             }
         }
@@ -54,7 +50,6 @@ public class UserServiceImpl implements UserService{
         UserMapper.updateUser(user, request);
         User saved = userRepo.save(user);
         log.info("User profile updated: userId={}", saved.getId());
-
         return UserMapper.toResponse(saved);
     }
 

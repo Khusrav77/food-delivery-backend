@@ -1,17 +1,11 @@
 package com.shh.foodeliverybackendapp.exception;
 
 
-public class EntityNotFoundException extends RuntimeException {
+import org.springframework.http.HttpStatus;
 
-    private final String entityType;
-    private final Object id;
+public class EntityNotFoundException extends ApiException {
 
     public EntityNotFoundException(String entityType, Object id) {
-        super(entityType + " with id " + id + " not found");
-        this.entityType = entityType;
-        this.id = id;
+        super(HttpStatus.NOT_FOUND, "%s with id %s not found".formatted(entityType, id));
     }
-
-    public String getEntityType() { return entityType; }
-    public Object getId() { return id; }
 }

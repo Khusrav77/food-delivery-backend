@@ -17,11 +17,7 @@ public final class ProductMapper {
         product.setDescription(request.description());
         product.setCategory(category);
         product.setIsActive(request.active());
-
-        product.setPosition(
-                request.position() != null ? request.position() : 0
-        );
-
+        product.setPosition(request.position() != null ? request.position() : 0);
         return product;
     }
 
@@ -35,7 +31,6 @@ public final class ProductMapper {
                 product.getIsActive(),
                 product.getPosition(),
                 product.getCreatedAt(),
-                product.getUpdatedAt()
-        );
+                product.getUpdatedAt());
     }
 }

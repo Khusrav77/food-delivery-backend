@@ -1,8 +1,10 @@
 package com.shh.foodeliverybackendapp.exception;
 
-public class InvalidOtpException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class InvalidOtpException extends ApiException {
 
     public InvalidOtpException(String message) {
-        super(message);
+        super(HttpStatus.BAD_REQUEST, message);
     }
 }

@@ -31,7 +31,8 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryResponse create(CategoryRequest request) {
         if (categoryRepo.existsByName(request.name())) {
             throw new EntityAlreadyExistsException(
-                    "Category with name '" + request.name() + "' already exists");
+                    "Category with name '%s' already exists"
+                            .formatted(request.name()));
         }
         Category category = toEntity(request);
         return toResponse(categoryRepo.save(category));

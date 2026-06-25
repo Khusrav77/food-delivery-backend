@@ -13,10 +13,7 @@ import org.springframework.context.annotation.Configuration;
                 title = "Food Delivery API",
                 version = "v1",
                 description = "REST API for food delivery application",
-                contact = @Contact(
-                        name = "SHH Team")
-        )
-)
+                contact = @Contact(name = "SHH Team")))
 @SecurityScheme(
         name = "bearerAuth",
         type = SecuritySchemeType.HTTP,

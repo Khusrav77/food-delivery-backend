@@ -25,9 +25,10 @@ public class OtpServiceImpl implements OtpService {
     @Override
     public void sendCode(String phone) {
         log.info("Generating OTP for phone={}", maskPhone(phone));
-        String code = generateCode();
 
+        String code = generateCode();
         otpStorage.save(phone, code, Duration.ofMinutes(3));
+
         log.info("OTP saved for phone={}, ttl={} minutes", maskPhone(phone), 3);
         log.debug("Generated OTP code: {}", code);
     }
@@ -49,7 +50,6 @@ public class OtpServiceImpl implements OtpService {
 
         otpStorage.delete(phone);
         log.info("OTP successfully verified for phone={}", maskPhone(phone));
-
         return true;
     }
 
