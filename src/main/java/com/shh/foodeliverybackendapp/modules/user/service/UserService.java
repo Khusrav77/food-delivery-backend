@@ -16,4 +16,6 @@ public interface UserService {
     User findOrCreateByPhone(String phone);
 
     boolean existsByEmail(String email);
+
+    User getCurrentUserEntity();
 }

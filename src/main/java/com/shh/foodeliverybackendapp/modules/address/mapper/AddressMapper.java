@@ -3,18 +3,20 @@ package com.shh.foodeliverybackendapp.modules.address.mapper;
 import com.shh.foodeliverybackendapp.modules.address.dto.UserAddressRequest;
 import com.shh.foodeliverybackendapp.modules.address.dto.UserAddressResponse;
 import com.shh.foodeliverybackendapp.modules.address.entity.UserAddress;
+import com.shh.foodeliverybackendapp.modules.user.entity.User;
 
 public final class AddressMapper {
 
     private AddressMapper() {}
 
-    public static UserAddress toUserAddress(UserAddressRequest request) {
+    public static UserAddress toUserAddress(User user,UserAddressRequest request) {
         UserAddress address = new UserAddress();
-        updateAddress(request, address);
+        address.setUser(user);
+        updateAddress(address, request);
         return address;
     }
 
-    public static void updateAddress(UserAddressRequest request, UserAddress userAddress) {
+    public static void updateAddress(UserAddress userAddress, UserAddressRequest request) {
         userAddress.setTitle(request.title());
         userAddress.setCity(request.city());
         userAddress.setStreet(request.street());
@@ -26,7 +28,7 @@ public final class AddressMapper {
         userAddress.setComment(request.comment());
         userAddress.setLatitude(request.latitude());
         userAddress.setLongitude(request.longitude());
-        userAddress.setDefault(request.isDefault());
+        userAddress.setDefault(Boolean.TRUE.equals(request.isDefault()));
     }
 
     public static UserAddressResponse toUserAddressResponse(UserAddress address) {

@@ -68,7 +68,8 @@ public class UserServiceImpl implements UserService{
         return userRepo.existsByEmail(email);
     }
 
-    private User getCurrentUserEntity() {
+    @Override
+    public User getCurrentUserEntity() {
         String userId = SecurityContextHolder.getContext().getAuthentication().getName();
         return getUserById(UUID.fromString(userId));
     }
