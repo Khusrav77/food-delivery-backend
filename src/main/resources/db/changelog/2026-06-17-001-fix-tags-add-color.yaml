@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026-06-17-001-fix-tags-add-color
+      author: shh
+      changes:
+        - addColumn:
+            tableName: tags
+            columns:
+              - column:
+                  name: color
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+                    unique: true
+                  defaultValue: '#94a3b8'
