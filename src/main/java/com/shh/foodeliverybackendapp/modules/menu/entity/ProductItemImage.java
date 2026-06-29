@@ -6,11 +6,11 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "menu_item_images")
-public class MenuItemImage extends AbstractEntity {
+public class ProductItemImage extends AbstractEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_item_id", nullable = false)
-    private MenuItem menuItem;
+    private ProductItem productItem;
 
     @Column(name = "url", nullable = false)
     private String url;
@@ -18,17 +18,17 @@ public class MenuItemImage extends AbstractEntity {
     @Column(name = "position", nullable = false)
     private int position = 0;
 
-    protected MenuItemImage() {}
+    protected ProductItemImage() {}
 
-    public MenuItemImage(String url) {
+    public ProductItemImage(String url) {
         this.url = url;
     }
 
-    public MenuItem getMenuItem() {
-        return menuItem;
+    public ProductItem getMenuItem() {
+        return productItem;
     }
-    public void setMenuItem(MenuItem menuItem) {
-        this.menuItem = menuItem;
+    public void setMenuItem(ProductItem productItem) {
+        this.productItem = productItem;
     }
 
     public String getUrl() {

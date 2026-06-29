@@ -7,11 +7,11 @@ import java.math.BigDecimal;
 
 @Entity
 @Table(name = "menu_item_sizes")
-public class MenuItemSize extends AbstractEntity {
+public class ProductItemSize extends AbstractEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_item_id", nullable = false)
-    private MenuItem menuItem;
+    private ProductItem productItem;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "label", nullable = false)
@@ -30,23 +30,23 @@ public class MenuItemSize extends AbstractEntity {
     @Column(name = "position", nullable = false)
     private int position = 0;
 
-    protected MenuItemSize() {}
+    protected ProductItemSize() {}
 
-    public MenuItemSize(MenuItem menuItem, SizeLabel label,
-                        BigDecimal sizeValue, SizeUnit sizeUnit,
-                        BigDecimal price) {
-        this.menuItem = menuItem;
+    public ProductItemSize(ProductItem productItem, SizeLabel label,
+                           BigDecimal sizeValue, SizeUnit sizeUnit,
+                           BigDecimal price) {
+        this.productItem = productItem;
         this.label = label;
         this.sizeValue = sizeValue;
         this.sizeUnit = sizeUnit;
         this.price = price;
     }
 
-    public MenuItem getMenuItem() {
-        return menuItem;
+    public ProductItem getMenuItem() {
+        return productItem;
     }
-    public void setMenuItem(MenuItem menuItem) {
-        this.menuItem = menuItem;
+    public void setMenuItem(ProductItem productItem) {
+        this.productItem = productItem;
     }
 
     public SizeLabel getLabel() {

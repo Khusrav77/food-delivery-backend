@@ -2,10 +2,10 @@ package com.shh.foodeliverybackendapp.modules.menu.mapper;
 
 import com.shh.foodeliverybackendapp.modules.menu.dto.request.MenuItemRequest;
 import com.shh.foodeliverybackendapp.modules.menu.dto.response.MenuItemResponse;
-import com.shh.foodeliverybackendapp.modules.menu.entity.MenuItem;
-import com.shh.foodeliverybackendapp.modules.menu.entity.MenuItemImage;
-import com.shh.foodeliverybackendapp.modules.menu.entity.MenuItemSize;
-import com.shh.foodeliverybackendapp.modules.menu.entity.MenuItemTags;
+import com.shh.foodeliverybackendapp.modules.menu.entity.ProductItem;
+import com.shh.foodeliverybackendapp.modules.menu.entity.ProductItemImage;
+import com.shh.foodeliverybackendapp.modules.menu.entity.ProductItemSize;
+import com.shh.foodeliverybackendapp.modules.menu.entity.ProductItemTags;
 import com.shh.foodeliverybackendapp.modules.menu.entity.Product;
 
 import java.util.List;
@@ -16,40 +16,40 @@ public final class MenuItemMapper {
 
     private MenuItemMapper() {}
 
-    public static MenuItem toEntity(MenuItemRequest request, Product product) {
-        MenuItem menuItem = new MenuItem(request.name(), product);
-        menuItem.setActive(request.active());
-        return menuItem;
+    public static ProductItem toEntity(MenuItemRequest request, Product product) {
+        ProductItem productItem = new ProductItem(request.name(), product);
+        productItem.setActive(request.active());
+        return productItem;
     }
 
-    public static MenuItemResponse toResponse(MenuItem menuItem) {
-        List<String> imageUrls = menuItem.getImages().stream()
-                .map(MenuItemImage::getUrl)
+    public static MenuItemResponse toResponse(ProductItem productItem) {
+        List<String> imageUrls = productItem.getImages().stream()
+                .map(ProductItemImage::getUrl)
                 .toList();
 
-        List<MenuItemResponse.SizeView> sizes = menuItem.getSizes().stream()
+        List<MenuItemResponse.SizeView> sizes = productItem.getSizes().stream()
                 .map(MenuItemMapper::toSizeView)
                 .toList();
 
-        Set<String> tagLabels = menuItem.getTags().stream()
-                .map(MenuItemTags::getTag)
+        Set<String> tagLabels = productItem.getTags().stream()
+                .map(ProductItemTags::getTag)
                 .filter(tag -> tag != null)
                 .map(tag -> tag.getLabel())
                 .collect(Collectors.toCollection(java.util.LinkedHashSet::new));
 
         return new MenuItemResponse(
-                menuItem.getId(),
-                menuItem.getProduct() == null ? null : menuItem.getProduct().getId(),
-                menuItem.getName(),
-                menuItem.getActive(),
-                menuItem.getCreatedAt(),
-                menuItem.getUpdatedAt(),
+                productItem.getId(),
+                productItem.getProduct() == null ? null : productItem.getProduct().getId(),
+                productItem.getName(),
+                productItem.getActive(),
+                productItem.getCreatedAt(),
+                productItem.getUpdatedAt(),
                 imageUrls,
                 sizes,
                 tagLabels);
     }
 
-    private static MenuItemResponse.SizeView toSizeView(MenuItemSize size) {
+    private static MenuItemResponse.SizeView toSizeView(ProductItemSize size) {
         return new MenuItemResponse.SizeView(
                 size.getId(),
                 size.getLabel() == null ? null : size.getLabel().name(),

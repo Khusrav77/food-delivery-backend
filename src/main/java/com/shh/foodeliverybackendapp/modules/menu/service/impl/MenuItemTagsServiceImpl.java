@@ -1,7 +1,7 @@
 package com.shh.foodeliverybackendapp.modules.menu.service.impl;
 
-import com.shh.foodeliverybackendapp.modules.menu.entity.MenuItem;
-import com.shh.foodeliverybackendapp.modules.menu.entity.MenuItemTags;
+import com.shh.foodeliverybackendapp.modules.menu.entity.ProductItem;
+import com.shh.foodeliverybackendapp.modules.menu.entity.ProductItemTags;
 import com.shh.foodeliverybackendapp.modules.menu.entity.Tag;
 import com.shh.foodeliverybackendapp.exception.EntityNotFoundException;
 import com.shh.foodeliverybackendapp.modules.menu.repository.MenuItemRepository;
@@ -34,12 +34,12 @@ public class MenuItemTagsServiceImpl implements MenuItemTagsService {
         if (menuItemTagsRepo.existsByMenuItem_IdAndTag_Id(menuItemId, tagId)) {
             return; // idempotent — nothing to do
         }
-        MenuItem menuItem = menuItemRepo.findById(menuItemId)
+        ProductItem productItem = menuItemRepo.findById(menuItemId)
                 .orElseThrow(() -> new EntityNotFoundException("MenuItem", menuItemId));
         Tag tag = tagRepo.findById(tagId)
                 .orElseThrow(() -> new EntityNotFoundException("Tag", tagId));
 
-        MenuItemTags link = new MenuItemTags(menuItem, tag);
+        ProductItemTags link = new ProductItemTags(productItem, tag);
         menuItemTagsRepo.save(link);
     }
 

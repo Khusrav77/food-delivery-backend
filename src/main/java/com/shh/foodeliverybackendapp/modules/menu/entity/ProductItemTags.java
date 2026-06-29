@@ -6,10 +6,10 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "menu_item_tags")
-public class MenuItemTags extends AbstractEntity {
+public class ProductItemTags extends AbstractEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_item_id", nullable = false)
-    private MenuItem menuItem;
+    private ProductItem productItem;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tag_id", nullable = false)
@@ -18,18 +18,18 @@ public class MenuItemTags extends AbstractEntity {
     @Column(name = "position", nullable = false)
     private int position = 0;
 
-    protected MenuItemTags() {}
+    protected ProductItemTags() {}
 
-    public MenuItemTags(MenuItem menuItem, Tag tag) {
-        this.menuItem = menuItem;
+    public ProductItemTags(ProductItem productItem, Tag tag) {
+        this.productItem = productItem;
         this.tag = tag;
     }
 
-    public MenuItem getMenuItem() {
-        return menuItem;
+    public ProductItem getMenuItem() {
+        return productItem;
     }
-    public void setMenuItem(MenuItem menuItem) {
-        this.menuItem = menuItem;
+    public void setMenuItem(ProductItem productItem) {
+        this.productItem = productItem;
     }
 
     public Tag getTag() {

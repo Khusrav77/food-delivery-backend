@@ -19,7 +19,7 @@ import static com.shh.foodeliverybackendapp.modules.menu.mapper.CategoryMapper.t
 
 @Service
 @Transactional
-public class CategoryServiceImpl implements CategoryService {
+public  class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepo;
 

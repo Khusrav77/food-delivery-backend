@@ -2,7 +2,7 @@ package com.shh.foodeliverybackendapp.modules.menu.service.impl;
 
 import com.shh.foodeliverybackendapp.modules.menu.dto.request.MenuItemRequest;
 import com.shh.foodeliverybackendapp.modules.menu.dto.response.MenuItemResponse;
-import com.shh.foodeliverybackendapp.modules.menu.entity.MenuItem;
+import com.shh.foodeliverybackendapp.modules.menu.entity.ProductItem;
 import com.shh.foodeliverybackendapp.modules.menu.entity.Product;
 import com.shh.foodeliverybackendapp.exception.EntityNotFoundException;
 import com.shh.foodeliverybackendapp.modules.menu.mapper.MenuItemMapper;
@@ -36,8 +36,8 @@ public class MenuItemServiceImpl implements MenuItemService {
     public MenuItemResponse create(MenuItemRequest request) {
         Product product = productRepo.findById(request.productId())
                 .orElseThrow(() -> new EntityNotFoundException("Product", request.productId()));
-        MenuItem menuItem = MenuItemMapper.toEntity(request, product);
-        return MenuItemMapper.toResponse(menuItemRepo.save(menuItem));
+        ProductItem productItem = MenuItemMapper.toEntity(request, product);
+        return MenuItemMapper.toResponse(menuItemRepo.save(productItem));
     }
 
     @Override
@@ -49,7 +49,8 @@ public class MenuItemServiceImpl implements MenuItemService {
     @Override
     @Transactional(readOnly = true)
     public List<MenuItemResponse> findAll() {
-        return menuItemRepo.findAll().stream()
+        return menuItemRepo.findAll()
+                .stream()
                 .map(MenuItemMapper::toResponse)
                 .toList();
     }
@@ -67,20 +68,20 @@ public class MenuItemServiceImpl implements MenuItemService {
 
     @Override
     public MenuItemResponse updateById(UUID id, MenuItemRequest request) {
-        MenuItem menuItem = getOrThrow(id);
+        ProductItem productItem = getOrThrow(id);
 
         if (request.productId() != null
-                && (menuItem.getProduct() == null
-                    || !request.productId().equals(menuItem.getProduct().getId()))) {
+                && (productItem.getProduct() == null
+                    || !request.productId().equals(productItem.getProduct().getId()))) {
             throw new UnsupportedOperationException(
                     "Re-parenting a menu item to a different product is not supported. "
                             + "Delete and recreate instead.");
         }
 
-        if (request.name() != null) menuItem.setName(request.name());
-        if (request.active() != null) menuItem.setActive(request.active());
+        if (request.name() != null) productItem.setName(request.name());
+        if (request.active() != null) productItem.setActive(request.active());
 
-        return MenuItemMapper.toResponse(menuItemRepo.save(menuItem));
+        return MenuItemMapper.toResponse(menuItemRepo.save(productItem));
     }
 
     @Override
@@ -93,8 +94,8 @@ public class MenuItemServiceImpl implements MenuItemService {
 
     @Override
     public MenuItemResponse attachTag(UUID menuItemId, UUID tagId) {
-        MenuItem menuItem = getOrThrow(menuItemId);
-        menuItemTagsService.attach(menuItem.getId(), tagId);
+        ProductItem productItem = getOrThrow(menuItemId);
+        menuItemTagsService.attach(productItem.getId(), tagId);
         return MenuItemMapper.toResponse(getOrThrow(menuItemId));
     }
 
@@ -105,7 +106,7 @@ public class MenuItemServiceImpl implements MenuItemService {
         return MenuItemMapper.toResponse(getOrThrow(menuItemId));
     }
 
-    private MenuItem getOrThrow(UUID id) {
+    private ProductItem getOrThrow(UUID id) {
         return menuItemRepo.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("MenuItem", id));
     }

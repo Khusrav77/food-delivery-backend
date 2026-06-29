@@ -6,7 +6,7 @@ import com.shh.foodeliverybackendapp.modules.address.dto.UserAddressResponse;
 import com.shh.foodeliverybackendapp.modules.address.entity.UserAddress;
 import com.shh.foodeliverybackendapp.modules.address.mapper.AddressMapper;
 import com.shh.foodeliverybackendapp.modules.address.repository.UserAddressRepository;
-import com.shh.foodeliverybackendapp.modules.base.BasicService;
+import com.shh.foodeliverybackendapp.modules.base.CrudAbstractService;
 import com.shh.foodeliverybackendapp.modules.user.entity.User;
 import com.shh.foodeliverybackendapp.modules.user.service.UserService;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class UserAddressServiceImpl implements BasicService<UserAddressRequest, UserAddressResponse> {
+public class UserAddressServiceImpl implements CrudAbstractService<UserAddressRequest, UserAddressResponse> {
 
     private final UserAddressRepository userAddressRepo;
     private final UserService userService;

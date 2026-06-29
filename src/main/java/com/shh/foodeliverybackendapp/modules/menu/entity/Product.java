@@ -23,7 +23,7 @@ public class Product extends AbstractEntity {
     private int position = 0;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MenuItem> menuItems = new ArrayList<>();
+    private List<ProductItem> productItems = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)

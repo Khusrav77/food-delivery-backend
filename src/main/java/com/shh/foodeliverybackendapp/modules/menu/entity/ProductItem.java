@@ -8,7 +8,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "menu_items")
-public class MenuItem extends AbstractEntity {
+public class ProductItem extends AbstractEntity {
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -17,21 +17,21 @@ public class MenuItem extends AbstractEntity {
     private boolean isActive = true;
 
     @OneToMany(mappedBy = "menuItem", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<MenuItemImage> images = new ArrayList<>();
+    private final List<ProductItemImage> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "menuItem", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<MenuItemSize> sizes = new ArrayList<>();
+    private final List<ProductItemSize> sizes = new ArrayList<>();
 
     @OneToMany(mappedBy = "menuItem", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<MenuItemTags> tags = new ArrayList<>();
+    private final List<ProductItemTags> tags = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    protected MenuItem() {}
+    protected ProductItem() {}
 
-    public MenuItem(String name, Product product) {
+    public ProductItem(String name, Product product) {
         this.name = name;
         this.product = product;
     }
@@ -42,43 +42,43 @@ public class MenuItem extends AbstractEntity {
     public boolean getActive() {return isActive;}
     public void setActive(Boolean active) {this.isActive = active;}
 
-    public List<MenuItemImage> getImages() {return images;}
+    public List<ProductItemImage> getImages() {return images;}
 
-    public List<MenuItemSize> getSizes() {return sizes;}
+    public List<ProductItemSize> getSizes() {return sizes;}
 
-    public List<MenuItemTags> getTags() {return tags;}
+    public List<ProductItemTags> getTags() {return tags;}
 
     public Product getProduct() {return product;}
 
 
-    public void addImage(MenuItemImage image) {
+    public void addImage(ProductItemImage image) {
         if (!images.contains(image)) {
             images.add(image);
             image.setMenuItem(this);
         }
     }
 
-    public void removeImage(MenuItemImage image) {
+    public void removeImage(ProductItemImage image) {
         images.remove(image);
         image.setMenuItem(null);
     }
 
-    public void addSize(MenuItemSize size) {
+    public void addSize(ProductItemSize size) {
         sizes.add(size);
         size.setMenuItem(this);
     }
 
-    public void removeSize(MenuItemSize size) {
+    public void removeSize(ProductItemSize size) {
         sizes.remove(size);
         size.setMenuItem(null);
     }
 
-    public void addTag(MenuItemTags tag) {
+    public void addTag(ProductItemTags tag) {
         tags.add(tag);
         tag.setMenuItem(this);
     }
 
-    public void removeTag(MenuItemTags tag) {
+    public void removeTag(ProductItemTags tag) {
         tags.remove(tag);
         tag.setMenuItem(null);
     }

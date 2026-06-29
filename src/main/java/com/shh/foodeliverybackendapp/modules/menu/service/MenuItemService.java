@@ -1,13 +1,13 @@
 package com.shh.foodeliverybackendapp.modules.menu.service;
 
-import com.shh.foodeliverybackendapp.modules.base.BasicService;
+import com.shh.foodeliverybackendapp.modules.base.CrudAbstractService;
 import com.shh.foodeliverybackendapp.modules.menu.dto.request.MenuItemRequest;
 import com.shh.foodeliverybackendapp.modules.menu.dto.response.MenuItemResponse;
 
 import java.util.List;
 import java.util.UUID;
 
-public interface MenuItemService extends BasicService<MenuItemRequest, MenuItemResponse> {
+public interface MenuItemService extends CrudAbstractService<MenuItemRequest, MenuItemResponse> {
 
     /** Menu items that belong to a given product. */
     List<MenuItemResponse> findByProduct(UUID productId);

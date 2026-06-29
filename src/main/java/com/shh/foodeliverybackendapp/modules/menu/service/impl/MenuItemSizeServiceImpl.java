@@ -2,8 +2,8 @@ package com.shh.foodeliverybackendapp.modules.menu.service.impl;
 
 import com.shh.foodeliverybackendapp.modules.menu.dto.request.MenuItemSizeRequest;
 import com.shh.foodeliverybackendapp.modules.menu.dto.response.MenuItemSizeResponse;
-import com.shh.foodeliverybackendapp.modules.menu.entity.MenuItem;
-import com.shh.foodeliverybackendapp.modules.menu.entity.MenuItemSize;
+import com.shh.foodeliverybackendapp.modules.menu.entity.ProductItem;
+import com.shh.foodeliverybackendapp.modules.menu.entity.ProductItemSize;
 import com.shh.foodeliverybackendapp.exception.EntityNotFoundException;
 import com.shh.foodeliverybackendapp.modules.menu.mapper.MenuItemSizeMapper;
 import com.shh.foodeliverybackendapp.modules.menu.repository.MenuItemRepository;
@@ -32,11 +32,11 @@ public class MenuItemSizeServiceImpl implements MenuItemSizeService {
 
     @Override
     public MenuItemSizeResponse create(MenuItemSizeRequest request) {
-        MenuItem menuItem = menuItemRepo.findById(request.menuItemId())
+        ProductItem productItem = menuItemRepo.findById(request.menuItemId())
                 .orElseThrow(() -> new EntityNotFoundException("MenuItem", request.menuItemId()));
 
-        MenuItemSize size = MenuItemSizeMapper.toEntity(request, menuItem);
-        menuItem.addSize(size);
+        ProductItemSize size = MenuItemSizeMapper.toEntity(request, productItem);
+        productItem.addSize(size);
 
         return toResponse(menuItemSizeRepo.save(size));
     }
@@ -68,7 +68,7 @@ public class MenuItemSizeServiceImpl implements MenuItemSizeService {
 
     @Override
     public MenuItemSizeResponse updateById(UUID id, MenuItemSizeRequest request) {
-        MenuItemSize size = getOrThrow(id);
+        ProductItemSize size = getOrThrow(id);
 
         if (request.label() != null)     size.setLabel(request.label());
         if (request.sizeValue() != null) size.setSizeValue(request.sizeValue());
@@ -80,12 +80,12 @@ public class MenuItemSizeServiceImpl implements MenuItemSizeService {
 
     @Override
     public void deleteById(UUID id) {
-        MenuItemSize size = getOrThrow(id);
+        ProductItemSize size = getOrThrow(id);
         size.getMenuItem().removeSize(size);
         menuItemSizeRepo.delete(size);
     }
 
-    private MenuItemSize getOrThrow(UUID id) {
+    private ProductItemSize getOrThrow(UUID id) {
         return menuItemSizeRepo.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("MenuItemSize", id));
     }
