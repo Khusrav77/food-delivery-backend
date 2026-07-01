@@ -2,10 +2,11 @@ package com.shh.foodeliverybackendapp.modules.order.entity;
 
 import com.shh.foodeliverybackendapp.modules.base.AbstractEntity;
 import com.shh.foodeliverybackendapp.modules.menu.entity.ProductItem;
+import com.shh.foodeliverybackendapp.modules.menu.entity.ProductItemSize;
+import com.shh.foodeliverybackendapp.modules.menu.entity.SizeLabel;
+import com.shh.foodeliverybackendapp.modules.menu.entity.SizeUnit;
 import jakarta.persistence.*;
-
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -16,88 +17,113 @@ public class OrderItem extends AbstractEntity {
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_item_id")
-    private ProductItem productItem;
+    @Column(name = "product_item_id", nullable = false)
+    private UUID productItemId;
+
+    @Column(name = "product_item_size_id", nullable = false)
+    private UUID productItemSizeId;
 
     @Column(name = "product_name", nullable = false, length = 255)
     private String productName;
 
-    @Column(nullable = false)
-    private Integer quantity;
+    @Column(name = "product_image")
+    private String productImage;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "size_label", nullable = false)
+    private SizeLabel sizeLabel;
+
+    @Column(name = "size_value", nullable =false, precision = 10, scale = 2)
+    private BigDecimal sizeValue;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "size_unit", nullable = false)
+    private SizeUnit sizeUnit;
 
     @Column(name = "unit_price", nullable = false, precision = 10, scale = 2)
     private BigDecimal unitPrice;
 
-    @Column(name = "total_price", nullable = false, precision = 10, scale = 2)
-    private BigDecimal totalPrice;
+    @Column(nullable = false)
+    private Integer quantity;
 
-    protected OrderItem() {
-    }
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal subtotal;
 
-    public OrderItem(Order order,
-                     ProductItem productItem,
-                     String productName,
-                     Integer quantity,
-                     BigDecimal unitPrice,
-                     BigDecimal totalPrice) {
-        this.order = order;
-        this.productItem = productItem;
+    protected OrderItem() {}
+
+    private OrderItem(
+            UUID productItemId,
+            UUID productItemSizeId,
+            String productName,
+            String productImage,
+            SizeLabel sizeLabel,
+            BigDecimal sizeValue,
+            SizeUnit sizeUnit,
+            BigDecimal unitPrice,
+            Integer quantity) {
+
+        this.productItemId = productItemId;
+        this.productItemSizeId = productItemSizeId;
         this.productName = productName;
-        this.quantity = quantity;
+        this.productImage = productImage;
+        this.sizeLabel = sizeLabel;
+        this.sizeValue = sizeValue;
+        this.sizeUnit = sizeUnit;
         this.unitPrice = unitPrice;
-        this.totalPrice = totalPrice;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public ProductItem getMenuItem() {
-        return productItem;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public BigDecimal getUnitPrice() {
-        return unitPrice;
-    }
-
-    public BigDecimal getTotalPrice() {
-        return totalPrice;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
-    }
-
-    public void setMenuItem(ProductItem productItem) {
-        this.productItem = productItem;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
-    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+        this.subtotal = unitPrice.multiply(BigDecimal.valueOf(quantity));
     }
 
-    public void setUnitPrice(BigDecimal unitPrice) {
-        this.unitPrice = unitPrice;
+    public static OrderItem of(
+            ProductItem product,
+            ProductItemSize size,
+            Integer quantity) {
+
+        if (product == null) {
+            throw new IllegalArgumentException("Product cannot be null");
+        }
+
+        if (size == null) {
+            throw new IllegalArgumentException("Product size cannot be null");
+        }
+
+        if (quantity == null || quantity <= 0) {
+            throw new IllegalArgumentException("Quantity must be greater than zero");
+        }
+
+        return new OrderItem(
+                product.getId(),
+                size.getId(),
+                product.getName(),
+                product.getPrimaryImage(),
+                size.getLabel(),
+                size.getSizeValue(),
+                size.getSizeUnit(),
+                size.getPrice(),
+                quantity);
     }
 
-    public void setTotalPrice(BigDecimal totalPrice) {
-        this.totalPrice = totalPrice;
-    }
+    void setOrder(Order order) {this.order = order;}
+
+    public Order getOrder() {return order;}
+
+    public UUID getProductItemId() {return productItemId;}
+
+    public UUID getProductItemSizeId() {return productItemSizeId;}
+
+    public String getProductName() {return productName;}
+
+    public String getProductImage() {return productImage;}
+
+    public SizeLabel getSizeLabel() {return sizeLabel;}
+
+    public BigDecimal getSizeValue() {return sizeValue;}
+
+    public SizeUnit getSizeUnit() {return sizeUnit;}
+
+    public BigDecimal getUnitPrice() {return unitPrice;}
+
+    public Integer getQuantity() {return quantity;}
+
+    public BigDecimal getSubtotal() {return subtotal;}
 }

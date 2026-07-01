@@ -4,8 +4,10 @@ import com.shh.foodeliverybackendapp.modules.address.entity.UserAddress;
 import com.shh.foodeliverybackendapp.modules.base.AbstractEntity;
 import com.shh.foodeliverybackendapp.modules.user.entity.User;
 import jakarta.persistence.*;
-import java.math.BigDecimal;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")
@@ -15,106 +17,111 @@ public class Order extends AbstractEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "address_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "address_id", nullable = false)
     private UserAddress address;
 
-    @Column(nullable = false, length = 30)
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 30)
     private OrderStatus status;
 
-    @Column(name = "payment_method", nullable = false, length = 30)
     @Enumerated(EnumType.STRING)
+    @Column(name = "payment_method", nullable = false, length = 30)
     private PaymentMethod paymentMethod;
-
-    @Column(name = "subtotal_price", nullable = false, precision = 10, scale = 2)
-    private BigDecimal subtotalPrice;
 
     @Column(name = "delivery_price", nullable = false, precision = 10, scale = 2)
     private BigDecimal deliveryPrice;
 
     @Column(name = "total_price", nullable = false, precision = 10, scale = 2)
-    private BigDecimal totalPrice;
+    private BigDecimal totalPrice = BigDecimal.ZERO;
 
     @Column(columnDefinition = "TEXT")
     private String comment;
 
+    @OneToMany(
+            mappedBy = "order",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private final List<OrderItem> orderItems = new ArrayList<>();
+
     protected Order() {}
 
-    public Order(User user, UserAddress address, OrderStatus status,
-                 PaymentMethod paymentMethod, BigDecimal subtotalPrice,
-                 BigDecimal deliveryPrice, BigDecimal totalPrice, String comment) {
+    public Order(User user,
+                 UserAddress address,
+                 OrderStatus status,
+                 PaymentMethod paymentMethod,
+                 BigDecimal deliveryPrice,
+                 String comment) {
+
         this.user = user;
         this.address = address;
         this.status = status;
         this.paymentMethod = paymentMethod;
-        this.subtotalPrice = subtotalPrice;
-        this.deliveryPrice = deliveryPrice;
-        this.totalPrice = totalPrice;
+        this.deliveryPrice = deliveryPrice != null
+                ? deliveryPrice
+                : BigDecimal.ZERO;
         this.comment = comment;
     }
 
-    public User getUser() {
-        return user;
+    public void addItem(OrderItem item) {
+
+        if (item == null) {
+            throw new IllegalArgumentException("Order item cannot be null");
+        }
+
+        orderItems.add(item);
+        item.setOrder(this);
+        calculateTotalPrice();
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void removeItem(OrderItem item) {
+
+        if (item == null) {return;}
+
+        orderItems.remove(item);
+        item.setOrder(null);
+        calculateTotalPrice();
     }
 
-    public UserAddress getAddress() {
-        return address;
+    public void calculateTotalPrice() {
+
+        BigDecimal itemsTotal = orderItems.stream()
+                .map(OrderItem::getSubtotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        totalPrice = itemsTotal.add(deliveryPrice);
     }
 
-    public void setAddress(UserAddress address) {
-        this.address = address;
-    }
+    public void changeStatus(OrderStatus status) {this.status = status;}
 
-    public OrderStatus getStatus() {
-        return status;
-    }
+    public void changeAddress(UserAddress address) {this.address = address;}
 
-    public void setStatus(OrderStatus status) {
-        this.status = status;
-    }
-
-    public PaymentMethod getPaymentMethod() {
-        return paymentMethod;
-    }
-
-    public void setPaymentMethod(PaymentMethod paymentMethod) {
+    public void changePaymentMethod(PaymentMethod paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
 
-    public BigDecimal getSubtotalPrice() {
-        return subtotalPrice;
+    public void changeComment(String comment) {this.comment = comment;}
+
+    public void changeDeliveryPrice(BigDecimal deliveryPrice) {
+
+        this.deliveryPrice = deliveryPrice != null ? deliveryPrice : BigDecimal.ZERO;
+        calculateTotalPrice();
     }
 
-    public void setSubtotalPrice(BigDecimal subtotalPrice) {
-        this.subtotalPrice = subtotalPrice;
-    }
 
-    public BigDecimal getDeliveryPrice() {
-        return deliveryPrice;
-    }
+    public User getUser() {return user;}
 
-    public void setDeliveryPrice(BigDecimal deliveryPrice) {
-        this.deliveryPrice = deliveryPrice;
-    }
+    public UserAddress getAddress() {return address;}
 
-    public BigDecimal getTotalPrice() {
-        return totalPrice;
-    }
+    public OrderStatus getStatus() {return status;}
 
-    public void setTotalPrice(BigDecimal totalPrice) {
-        this.totalPrice = totalPrice;
-    }
+    public PaymentMethod getPaymentMethod() {return paymentMethod;}
 
-    public String getComment() {
-        return comment;
-    }
+    public BigDecimal getDeliveryPrice() {return deliveryPrice;}
 
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
+    public BigDecimal getTotalPrice() {return totalPrice;}
+
+    public String getComment() {return comment;}
+
+    public List<OrderItem> getOrderItems() {return List.copyOf(orderItems);}
 }

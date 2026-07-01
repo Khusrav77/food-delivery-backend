@@ -1,23 +1,51 @@
 package com.shh.foodeliverybackendapp.modules.order.mappeer;
 
-import com.shh.foodeliverybackendapp.modules.base.AbstractMapper;
-import com.shh.foodeliverybackendapp.modules.order.dto.OrderRequest;
+import com.shh.foodeliverybackendapp.modules.order.dto.OrderItemResponse;
 import com.shh.foodeliverybackendapp.modules.order.dto.OrderResponse;
 import com.shh.foodeliverybackendapp.modules.order.entity.Order;
+import com.shh.foodeliverybackendapp.modules.order.entity.OrderItem;
 
-public final class OrderMapper implements AbstractMapper<Order, OrderRequest, OrderResponse> {
-    @Override
-    public OrderResponse toDto(Order entity, OrderResponse dto) {
-        return null;
+import java.util.List;
+
+public class OrderMapper {
+
+    public OrderResponse toResponse(Order order) {
+
+        if (order == null) {return null;}
+
+        return new OrderResponse(
+                order.getId(),
+                order.getUser().getId(),
+                order.getAddress().getId(),
+                order.getStatus(),
+                order.getPaymentMethod(),
+                order.getDeliveryPrice(),
+                order.getTotalPrice(),
+                order.getComment(),
+                order.getCreatedAt(),
+                mapItems(order));
     }
 
-    @Override
-    public Order toEntity(Order entity, OrderRequest dto) {
-        return null;
+    private List<OrderItemResponse> mapItems(Order order) {
+
+        return order.getOrderItems()
+                .stream()
+                .map(this::mapItem)
+                .toList();
     }
 
-    @Override
-    public OrderResponse updateDto(Order entity, OrderRequest dto) {
-        return null;
+    private OrderItemResponse mapItem(OrderItem item) {
+
+        return new OrderItemResponse(
+                item.getProductItemId(),
+                item.getProductItemSizeId(),
+                item.getProductName(),
+                item.getProductImage(),
+                item.getSizeLabel(),
+                item.getSizeValue(),
+                item.getSizeUnit(),
+                item.getUnitPrice(),
+                item.getQuantity(),
+                item.getSubtotal());
     }
 }
