@@ -6,7 +6,7 @@ import com.shh.foodeliverybackendapp.modules.menu.dto.response.MenuItemImageResp
 import java.util.List;
 import java.util.UUID;
 
-public interface MenuItemImageService {
+public interface ProductItemImageService {
 
     MenuItemImageResponse create(MenuItemImageRequest request);
 

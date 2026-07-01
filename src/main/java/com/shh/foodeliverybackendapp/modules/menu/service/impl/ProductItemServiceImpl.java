@@ -8,8 +8,8 @@ import com.shh.foodeliverybackendapp.exception.EntityNotFoundException;
 import com.shh.foodeliverybackendapp.modules.menu.mapper.MenuItemMapper;
 import com.shh.foodeliverybackendapp.modules.menu.repository.MenuItemRepository;
 import com.shh.foodeliverybackendapp.modules.menu.repository.ProductRepository;
-import com.shh.foodeliverybackendapp.modules.menu.service.MenuItemService;
-import com.shh.foodeliverybackendapp.modules.menu.service.MenuItemTagsService;
+import com.shh.foodeliverybackendapp.modules.menu.service.ProductItemService;
+import com.shh.foodeliverybackendapp.modules.menu.service.ProductItemTagsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,18 +18,18 @@ import java.util.UUID;
 
 @Service
 @Transactional
-public class MenuItemServiceImpl implements MenuItemService {
+public class ProductItemServiceImpl implements ProductItemService {
 
     private final MenuItemRepository menuItemRepo;
     private final ProductRepository productRepo;
-    private final MenuItemTagsService menuItemTagsService;
+    private final ProductItemTagsService productItemTagsService;
 
-    public MenuItemServiceImpl(MenuItemRepository menuItemRepo,
-                               ProductRepository productRepo,
-                               MenuItemTagsService menuItemTagsService) {
+    public ProductItemServiceImpl(MenuItemRepository menuItemRepo,
+                                  ProductRepository productRepo,
+                                  ProductItemTagsService productItemTagsService) {
         this.menuItemRepo = menuItemRepo;
         this.productRepo = productRepo;
-        this.menuItemTagsService = menuItemTagsService;
+        this.productItemTagsService = productItemTagsService;
     }
 
     @Override
@@ -95,14 +95,14 @@ public class MenuItemServiceImpl implements MenuItemService {
     @Override
     public MenuItemResponse attachTag(UUID menuItemId, UUID tagId) {
         ProductItem productItem = getOrThrow(menuItemId);
-        menuItemTagsService.attach(productItem.getId(), tagId);
+        productItemTagsService.attach(productItem.getId(), tagId);
         return MenuItemMapper.toResponse(getOrThrow(menuItemId));
     }
 
     @Override
     public MenuItemResponse detachTag(UUID menuItemId, UUID tagId) {
         getOrThrow(menuItemId);
-        menuItemTagsService.detach(menuItemId, tagId);
+        productItemTagsService.detach(menuItemId, tagId);
         return MenuItemMapper.toResponse(getOrThrow(menuItemId));
     }
 

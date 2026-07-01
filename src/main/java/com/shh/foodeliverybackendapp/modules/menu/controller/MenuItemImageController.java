@@ -2,7 +2,7 @@ package com.shh.foodeliverybackendapp.modules.menu.controller;
 
 import com.shh.foodeliverybackendapp.modules.menu.dto.request.MenuItemImageRequest;
 import com.shh.foodeliverybackendapp.modules.menu.dto.response.MenuItemImageResponse;
-import com.shh.foodeliverybackendapp.modules.menu.service.MenuItemImageService;
+import com.shh.foodeliverybackendapp.modules.menu.service.ProductItemImageService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -14,26 +14,26 @@ import java.util.UUID;
 @RequestMapping("/api/v1/menu-item-images")
 public class MenuItemImageController {
 
-    private final MenuItemImageService menuItemImageService;
+    private final ProductItemImageService productItemImageService;
 
-    public MenuItemImageController(MenuItemImageService menuItemImageService) {
-        this.menuItemImageService = menuItemImageService;
+    public MenuItemImageController(ProductItemImageService productItemImageService) {
+        this.productItemImageService = productItemImageService;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public MenuItemImageResponse create(@Valid @RequestBody MenuItemImageRequest request) {
-        return menuItemImageService.create(request);
+        return productItemImageService.create(request);
     }
 
     @GetMapping
     public List<MenuItemImageResponse> listByMenuItem(@RequestParam UUID menuItemId) {
-        return menuItemImageService.findByMenuItem(menuItemId);
+        return productItemImageService.findByMenuItem(menuItemId);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable UUID id) {
-        menuItemImageService.deleteById(id);
+        productItemImageService.deleteById(id);
     }
 }

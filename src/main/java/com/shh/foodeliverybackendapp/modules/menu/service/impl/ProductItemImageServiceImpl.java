@@ -9,7 +9,7 @@ import com.shh.foodeliverybackendapp.exception.EntityNotFoundException;
 import com.shh.foodeliverybackendapp.modules.menu.mapper.MenuItemImageMapper;
 import com.shh.foodeliverybackendapp.modules.menu.repository.MenuItemImageRepository;
 import com.shh.foodeliverybackendapp.modules.menu.repository.MenuItemRepository;
-import com.shh.foodeliverybackendapp.modules.menu.service.MenuItemImageService;
+import com.shh.foodeliverybackendapp.modules.menu.service.ProductItemImageService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,13 +20,13 @@ import static com.shh.foodeliverybackendapp.modules.menu.mapper.MenuItemImageMap
 
 @Service
 @Transactional
-public class MenuItemImageServiceImpl implements MenuItemImageService {
+public class ProductItemImageServiceImpl implements ProductItemImageService {
 
     private final MenuItemImageRepository menuItemImageRepo;
     private final MenuItemRepository menuItemRepo;
 
-    public MenuItemImageServiceImpl(MenuItemImageRepository menuItemImageRepo,
-                                    MenuItemRepository menuItemRepo) {
+    public ProductItemImageServiceImpl(MenuItemImageRepository menuItemImageRepo,
+                                       MenuItemRepository menuItemRepo) {
         this.menuItemImageRepo = menuItemImageRepo;
         this.menuItemRepo = menuItemRepo;
     }

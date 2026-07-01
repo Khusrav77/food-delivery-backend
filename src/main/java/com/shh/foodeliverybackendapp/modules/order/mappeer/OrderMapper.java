@@ -4,9 +4,12 @@ import com.shh.foodeliverybackendapp.modules.order.dto.OrderItemResponse;
 import com.shh.foodeliverybackendapp.modules.order.dto.OrderResponse;
 import com.shh.foodeliverybackendapp.modules.order.entity.Order;
 import com.shh.foodeliverybackendapp.modules.order.entity.OrderItem;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+
+@Component
 public class OrderMapper {
 
     public OrderResponse toResponse(Order order) {

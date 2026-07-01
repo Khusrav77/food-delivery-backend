@@ -7,7 +7,7 @@ import com.shh.foodeliverybackendapp.exception.EntityNotFoundException;
 import com.shh.foodeliverybackendapp.modules.menu.repository.MenuItemRepository;
 import com.shh.foodeliverybackendapp.modules.menu.repository.MenuItemTagsRepository;
 import com.shh.foodeliverybackendapp.modules.menu.repository.TagRepository;
-import com.shh.foodeliverybackendapp.modules.menu.service.MenuItemTagsService;
+import com.shh.foodeliverybackendapp.modules.menu.service.ProductItemTagsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,15 +15,15 @@ import java.util.UUID;
 
 @Service
 @Transactional
-public class MenuItemTagsServiceImpl implements MenuItemTagsService {
+public class ProductItemTagsServiceImpl implements ProductItemTagsService {
 
     private final MenuItemTagsRepository menuItemTagsRepo;
     private final MenuItemRepository menuItemRepo;
     private final TagRepository tagRepo;
 
-    public MenuItemTagsServiceImpl(MenuItemTagsRepository menuItemTagsRepo,
-                                   MenuItemRepository menuItemRepo,
-                                   TagRepository tagRepo) {
+    public ProductItemTagsServiceImpl(MenuItemTagsRepository menuItemTagsRepo,
+                                      MenuItemRepository menuItemRepo,
+                                      TagRepository tagRepo) {
         this.menuItemTagsRepo = menuItemTagsRepo;
         this.menuItemRepo = menuItemRepo;
         this.tagRepo = tagRepo;

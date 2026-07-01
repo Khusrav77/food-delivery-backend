@@ -7,8 +7,8 @@ import com.shh.foodeliverybackendapp.modules.menu.entity.ProductItemSize;
 import com.shh.foodeliverybackendapp.exception.EntityNotFoundException;
 import com.shh.foodeliverybackendapp.modules.menu.mapper.MenuItemSizeMapper;
 import com.shh.foodeliverybackendapp.modules.menu.repository.MenuItemRepository;
-import com.shh.foodeliverybackendapp.modules.menu.repository.MenuItemSizeRepository;
-import com.shh.foodeliverybackendapp.modules.menu.service.MenuItemSizeService;
+import com.shh.foodeliverybackendapp.modules.menu.repository.ProductItemSizeRepository;
+import com.shh.foodeliverybackendapp.modules.menu.service.ProductItemSizeService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,13 +19,13 @@ import static com.shh.foodeliverybackendapp.modules.menu.mapper.MenuItemSizeMapp
 
 @Service
 @Transactional
-public class MenuItemSizeServiceImpl implements MenuItemSizeService {
+public class ProductItemSizeServiceImpl implements ProductItemSizeService {
 
-    private final MenuItemSizeRepository menuItemSizeRepo;
+    private final ProductItemSizeRepository menuItemSizeRepo;
     private final MenuItemRepository menuItemRepo;
 
-    public MenuItemSizeServiceImpl(MenuItemSizeRepository menuItemSizeRepo,
-                                   MenuItemRepository menuItemRepo) {
+    public ProductItemSizeServiceImpl(ProductItemSizeRepository menuItemSizeRepo,
+                                      MenuItemRepository menuItemRepo) {
         this.menuItemSizeRepo = menuItemSizeRepo;
         this.menuItemRepo = menuItemRepo;
     }
@@ -44,7 +44,7 @@ public class MenuItemSizeServiceImpl implements MenuItemSizeService {
     @Override
     @Transactional(readOnly = true)
     public MenuItemSizeResponse findById(UUID id) {
-        return toResponse(getOrThrow(id));
+        return toResponse(getEntityById(id));
     }
 
     @Override
@@ -68,7 +68,7 @@ public class MenuItemSizeServiceImpl implements MenuItemSizeService {
 
     @Override
     public MenuItemSizeResponse updateById(UUID id, MenuItemSizeRequest request) {
-        ProductItemSize size = getOrThrow(id);
+        ProductItemSize size = getEntityById(id);
 
         if (request.label() != null)     size.setLabel(request.label());
         if (request.sizeValue() != null) size.setSizeValue(request.sizeValue());
@@ -80,13 +80,15 @@ public class MenuItemSizeServiceImpl implements MenuItemSizeService {
 
     @Override
     public void deleteById(UUID id) {
-        ProductItemSize size = getOrThrow(id);
+        ProductItemSize size = getEntityById(id);
         size.getMenuItem().removeSize(size);
         menuItemSizeRepo.delete(size);
     }
 
-    private ProductItemSize getOrThrow(UUID id) {
+    @Override
+    public ProductItemSize getEntityById(UUID id) {
         return menuItemSizeRepo.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("MenuItemSize", id));
     }
+
 }

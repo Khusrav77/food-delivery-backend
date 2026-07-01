@@ -10,7 +10,7 @@ import java.util.UUID;
  * domain — clients should think in terms of menu items and tags, not join
  * records.
  */
-public interface MenuItemTagsService {
+public interface ProductItemTagsService {
 
     /** Idempotent: returns existing or creates new join row. */
     void attach(UUID menuItemId, UUID tagId);

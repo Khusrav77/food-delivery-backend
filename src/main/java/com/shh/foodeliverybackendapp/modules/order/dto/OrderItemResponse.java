@@ -17,5 +17,4 @@ public record OrderItemResponse(
         BigDecimal unitPrice,
         Integer quantity,
         BigDecimal subtotal
-
-) { }
+) {}

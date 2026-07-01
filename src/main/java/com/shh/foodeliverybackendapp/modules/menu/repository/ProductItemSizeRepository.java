@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface MenuItemSizeRepository extends JpaRepository<ProductItemSize, UUID> {
+public interface ProductItemSizeRepository extends JpaRepository<ProductItemSize, UUID> {
 
     List<ProductItemSize> findByMenuItem_Id(UUID menuItemId);
 

@@ -7,7 +7,7 @@ import com.shh.foodeliverybackendapp.modules.menu.dto.response.MenuItemResponse;
 import java.util.List;
 import java.util.UUID;
 
-public interface MenuItemService extends CrudAbstractService<MenuItemRequest, MenuItemResponse> {
+public interface ProductItemService extends CrudAbstractService<MenuItemRequest, MenuItemResponse> {
 
     /** Menu items that belong to a given product. */
     List<MenuItemResponse> findByProduct(UUID productId);

@@ -30,7 +30,7 @@ public class Order extends AbstractEntity {
     private PaymentMethod paymentMethod;
 
     @Column(name = "delivery_price", nullable = false, precision = 10, scale = 2)
-    private BigDecimal deliveryPrice;
+    private BigDecimal deliveryPrice = BigDecimal.ZERO;
 
     @Column(name = "total_price", nullable = false, precision = 10, scale = 2)
     private BigDecimal totalPrice = BigDecimal.ZERO;
@@ -46,82 +46,46 @@ public class Order extends AbstractEntity {
 
     protected Order() {}
 
-    public Order(User user,
-                 UserAddress address,
-                 OrderStatus status,
-                 PaymentMethod paymentMethod,
-                 BigDecimal deliveryPrice,
-                 String comment) {
+    public static Order create(
+            User user,
+            UserAddress address,
+            PaymentMethod paymentMethod,
+            BigDecimal deliveryPrice,
+            String comment) {
 
-        this.user = user;
-        this.address = address;
-        this.status = status;
-        this.paymentMethod = paymentMethod;
-        this.deliveryPrice = deliveryPrice != null
-                ? deliveryPrice
-                : BigDecimal.ZERO;
-        this.comment = comment;
+        Order order = new Order();
+        order.user = user;
+        order.address = address;
+        order.status = OrderStatus.CREATED;
+        order.paymentMethod = paymentMethod;
+        order.deliveryPrice = deliveryPrice != null ? deliveryPrice : BigDecimal.ZERO;
+        order.comment = comment;
+        return order;
     }
 
     public void addItem(OrderItem item) {
-
-        if (item == null) {
-            throw new IllegalArgumentException("Order item cannot be null");
-        }
-
         orderItems.add(item);
         item.setOrder(this);
-        calculateTotalPrice();
     }
 
-    public void removeItem(OrderItem item) {
-
-        if (item == null) {return;}
-
-        orderItems.remove(item);
-        item.setOrder(null);
-        calculateTotalPrice();
+    public void clearItems() {
+        orderItems.forEach(item -> item.setOrder(null));
+        orderItems.clear();
     }
-
-    public void calculateTotalPrice() {
-
-        BigDecimal itemsTotal = orderItems.stream()
-                .map(OrderItem::getSubtotal)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        totalPrice = itemsTotal.add(deliveryPrice);
-    }
-
-    public void changeStatus(OrderStatus status) {this.status = status;}
-
-    public void changeAddress(UserAddress address) {this.address = address;}
-
-    public void changePaymentMethod(PaymentMethod paymentMethod) {
-        this.paymentMethod = paymentMethod;
-    }
-
-    public void changeComment(String comment) {this.comment = comment;}
-
-    public void changeDeliveryPrice(BigDecimal deliveryPrice) {
-
-        this.deliveryPrice = deliveryPrice != null ? deliveryPrice : BigDecimal.ZERO;
-        calculateTotalPrice();
-    }
-
 
     public User getUser() {return user;}
-
     public UserAddress getAddress() {return address;}
-
     public OrderStatus getStatus() {return status;}
-
     public PaymentMethod getPaymentMethod() {return paymentMethod;}
-
     public BigDecimal getDeliveryPrice() {return deliveryPrice;}
-
     public BigDecimal getTotalPrice() {return totalPrice;}
-
     public String getComment() {return comment;}
-
     public List<OrderItem> getOrderItems() {return List.copyOf(orderItems);}
+
+    public void setAddress(UserAddress address) {this.address = address;}
+    public void setStatus(OrderStatus status) {this.status = status;}
+    public void setPaymentMethod(PaymentMethod paymentMethod) {this.paymentMethod = paymentMethod;}
+    public void setDeliveryPrice(BigDecimal deliveryPrice) {this.deliveryPrice = deliveryPrice;}
+    public void setTotalPrice(BigDecimal totalPrice) {this.totalPrice = totalPrice;}
+    public void setComment(String comment) {this.comment = comment;}
 }

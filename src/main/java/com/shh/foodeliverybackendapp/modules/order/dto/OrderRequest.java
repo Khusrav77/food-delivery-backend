@@ -4,9 +4,10 @@ import com.shh.foodeliverybackendapp.modules.order.entity.PaymentMethod;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import org.hibernate.validator.constraints.UUID;
+
 
 import java.util.List;
+import java.util.UUID;
 
 public record OrderRequest(
         @NotNull

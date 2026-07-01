@@ -35,7 +35,7 @@ public class UserAddressServiceImpl implements CrudAbstractService<UserAddressRe
 
     @Override
     public UserAddressResponse findById(UUID id) {
-        return AddressMapper.toUserAddressResponse(getAddress(id)) ;
+        return AddressMapper.toUserAddressResponse(getAddressById(id)) ;
     }
 
     @Override
@@ -50,7 +50,7 @@ public class UserAddressServiceImpl implements CrudAbstractService<UserAddressRe
 
     @Override
     public UserAddressResponse updateById(UUID id, UserAddressRequest request) {
-        UserAddress userAddress = getAddress(id);
+        UserAddress userAddress = getAddressById(id);
         AddressMapper.updateAddress(userAddress, request);
         UserAddress saved = userAddressRepo.save(userAddress);
         return AddressMapper.toUserAddressResponse(saved);
@@ -58,10 +58,11 @@ public class UserAddressServiceImpl implements CrudAbstractService<UserAddressRe
 
     @Override
     public void deleteById(UUID id) {
-        userAddressRepo.delete(getAddress(id));
+        userAddressRepo.delete(getAddressById(id));
     }
 
-    private UserAddress getAddress(UUID id) {
+
+    public UserAddress getAddressById(UUID id) {
         User currentUser = userService.getCurrentUserEntity();
         return userAddressRepo.findByIdAndUser(id,currentUser).orElseThrow(() ->
                 new EntityNotFoundException("Address not found", id));
