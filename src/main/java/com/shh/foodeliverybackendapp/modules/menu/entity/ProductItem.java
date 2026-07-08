@@ -52,26 +52,26 @@ public class ProductItem extends AbstractEntity {
 
         if (!images.contains(image)) {
             images.add(image);
-            image.setMenuItem(this);
+            image.setProductItem(this);
         }
     }
 
     public void removeImage(ProductItemImage image) {
         if (image == null) {return;}
         images.remove(image);
-        image.setMenuItem(null);
+        image.setProductItem(null);
     }
 
     public void addSize(ProductItemSize size) {
         if (size == null) {return;}
         sizes.add(size);
-        size.setMenuItem(this);
+        size.setProductItem(this);
     }
 
     public void removeSize(ProductItemSize size) {
         if (size == null) {return;}
         sizes.remove(size);
-        size.setMenuItem(null);
+        size.setProductItem(null);
     }
 
     public void addTag(ProductItemTags tag) {

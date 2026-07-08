@@ -74,7 +74,7 @@ public class OrderItem extends AbstractEntity {
         this.subtotal = unitPrice.multiply(BigDecimal.valueOf(quantity));
     }
 
-    public static OrderItem of(
+    public static OrderItem create(
             ProductItem product,
             ProductItemSize size,
             Integer quantity) {
@@ -103,27 +103,26 @@ public class OrderItem extends AbstractEntity {
                 quantity);
     }
 
-    void setOrder(Order order) {this.order = order;}
+    public void updateQuantity(Integer quantity) {
+
+        if (quantity == null || quantity <= 0) {
+            throw new IllegalArgumentException("Quantity must be greater than zero");
+        }
+
+        this.quantity = quantity;
+        this.subtotal = unitPrice.multiply(BigDecimal.valueOf(quantity));
+    }
+    public void setOrder(Order order) {this.order = order;}
 
     public Order getOrder() {return order;}
-
     public UUID getProductItemId() {return productItemId;}
-
     public UUID getProductItemSizeId() {return productItemSizeId;}
-
     public String getProductName() {return productName;}
-
     public String getProductImage() {return productImage;}
-
     public SizeLabel getSizeLabel() {return sizeLabel;}
-
     public BigDecimal getSizeValue() {return sizeValue;}
-
     public SizeUnit getSizeUnit() {return sizeUnit;}
-
     public BigDecimal getUnitPrice() {return unitPrice;}
-
     public Integer getQuantity() {return quantity;}
-
     public BigDecimal getSubtotal() {return subtotal;}
 }

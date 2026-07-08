@@ -15,7 +15,7 @@ public final class MenuItemImageMapper {
     public static MenuItemImageResponse toResponse(ProductItemImage image) {
         return new MenuItemImageResponse(
                 image.getId(),
-                image.getMenuItem() == null ? null : image.getMenuItem().getId(),
+                image.getProductItem() == null ? null : image.getProductItem().getId(),
                 image.getUrl(),
                 image.getPosition(),
                 image.getCreatedAt(),

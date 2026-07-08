@@ -6,7 +6,7 @@ import com.shh.foodeliverybackendapp.modules.menu.entity.ProductItem;
 import com.shh.foodeliverybackendapp.modules.menu.entity.ProductItemSize;
 import com.shh.foodeliverybackendapp.exception.EntityNotFoundException;
 import com.shh.foodeliverybackendapp.modules.menu.mapper.MenuItemSizeMapper;
-import com.shh.foodeliverybackendapp.modules.menu.repository.MenuItemRepository;
+import com.shh.foodeliverybackendapp.modules.menu.repository.ProductItemRepository;
 import com.shh.foodeliverybackendapp.modules.menu.repository.ProductItemSizeRepository;
 import com.shh.foodeliverybackendapp.modules.menu.service.ProductItemSizeService;
 import org.springframework.stereotype.Service;
@@ -22,10 +22,10 @@ import static com.shh.foodeliverybackendapp.modules.menu.mapper.MenuItemSizeMapp
 public class ProductItemSizeServiceImpl implements ProductItemSizeService {
 
     private final ProductItemSizeRepository menuItemSizeRepo;
-    private final MenuItemRepository menuItemRepo;
+    private final ProductItemRepository menuItemRepo;
 
     public ProductItemSizeServiceImpl(ProductItemSizeRepository menuItemSizeRepo,
-                                      MenuItemRepository menuItemRepo) {
+                                      ProductItemRepository menuItemRepo) {
         this.menuItemSizeRepo = menuItemSizeRepo;
         this.menuItemRepo = menuItemRepo;
     }
@@ -81,7 +81,7 @@ public class ProductItemSizeServiceImpl implements ProductItemSizeService {
     @Override
     public void deleteById(UUID id) {
         ProductItemSize size = getEntityById(id);
-        size.getMenuItem().removeSize(size);
+        size.getProductItem().removeSize(size);
         menuItemSizeRepo.delete(size);
     }
 

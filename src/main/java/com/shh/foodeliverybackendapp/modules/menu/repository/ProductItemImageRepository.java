@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface MenuItemImageRepository extends JpaRepository<ProductItemImage, UUID> {
+public interface ProductItemImageRepository extends JpaRepository<ProductItemImage, UUID> {
 
     List<ProductItemImage> findByMenuItem_IdOrderByPositionAsc(UUID menuItemId);
 

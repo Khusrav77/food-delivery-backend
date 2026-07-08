@@ -47,9 +47,7 @@ public class UserController {
             @ApiResponse(responseCode = "409", description = "Email already in use")
     })
     @PutMapping
-    public UserResponse updateProfile(
-            @Valid @RequestBody UpdateProfileRequest request) {
-
+    public UserResponse updateProfile(@Valid @RequestBody UpdateProfileRequest request) {
         return userService.updateProfile(request);
     }
 }

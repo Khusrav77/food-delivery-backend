@@ -41,7 +41,7 @@ public final class MenuItemMapper {
                 productItem.getId(),
                 productItem.getProduct() == null ? null : productItem.getProduct().getId(),
                 productItem.getName(),
-                productItem.getActive(),
+                productItem.isActive(),
                 productItem.getCreatedAt(),
                 productItem.getUpdatedAt(),
                 imageUrls,

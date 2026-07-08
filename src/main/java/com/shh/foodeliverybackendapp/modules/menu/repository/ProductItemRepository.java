@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface MenuItemRepository extends JpaRepository<ProductItem, UUID> {
+public interface ProductItemRepository extends JpaRepository<ProductItem, UUID> {
 
     List<ProductItem> findByProduct_Id(UUID productId);
 }

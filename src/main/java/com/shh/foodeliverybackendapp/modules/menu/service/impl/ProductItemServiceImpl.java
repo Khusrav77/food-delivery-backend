@@ -6,7 +6,7 @@ import com.shh.foodeliverybackendapp.modules.menu.entity.ProductItem;
 import com.shh.foodeliverybackendapp.modules.menu.entity.Product;
 import com.shh.foodeliverybackendapp.exception.EntityNotFoundException;
 import com.shh.foodeliverybackendapp.modules.menu.mapper.MenuItemMapper;
-import com.shh.foodeliverybackendapp.modules.menu.repository.MenuItemRepository;
+import com.shh.foodeliverybackendapp.modules.menu.repository.ProductItemRepository;
 import com.shh.foodeliverybackendapp.modules.menu.repository.ProductRepository;
 import com.shh.foodeliverybackendapp.modules.menu.service.ProductItemService;
 import com.shh.foodeliverybackendapp.modules.menu.service.ProductItemTagsService;
@@ -20,11 +20,11 @@ import java.util.UUID;
 @Transactional
 public class ProductItemServiceImpl implements ProductItemService {
 
-    private final MenuItemRepository menuItemRepo;
+    private final ProductItemRepository menuItemRepo;
     private final ProductRepository productRepo;
     private final ProductItemTagsService productItemTagsService;
 
-    public ProductItemServiceImpl(MenuItemRepository menuItemRepo,
+    public ProductItemServiceImpl(ProductItemRepository menuItemRepo,
                                   ProductRepository productRepo,
                                   ProductItemTagsService productItemTagsService) {
         this.menuItemRepo = menuItemRepo;

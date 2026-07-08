@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface MenuItemTagsRepository extends JpaRepository<ProductItemTags, UUID> {
+public interface ProductItemTagsRepository extends JpaRepository<ProductItemTags, UUID> {
 
     Optional<ProductItemTags> findByMenuItem_IdAndTag_Id(UUID menuItemId, UUID tagId);
 

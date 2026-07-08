@@ -42,10 +42,10 @@ public class ProductItemSize extends AbstractEntity {
         this.price = price;
     }
 
-    public ProductItem getMenuItem() {
+    public ProductItem getProductItem() {
         return productItem;
     }
-    public void setMenuItem(ProductItem productItem) {
+    public void setProductItem(ProductItem productItem) {
         this.productItem = productItem;
     }
 

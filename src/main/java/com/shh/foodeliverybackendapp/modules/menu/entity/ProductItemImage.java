@@ -24,10 +24,10 @@ public class ProductItemImage extends AbstractEntity {
         this.url = url;
     }
 
-    public ProductItem getMenuItem() {
+    public ProductItem getProductItem() {
         return productItem;
     }
-    public void setMenuItem(ProductItem productItem) {
+    public void setProductItem(ProductItem productItem) {
         this.productItem = productItem;
     }
 

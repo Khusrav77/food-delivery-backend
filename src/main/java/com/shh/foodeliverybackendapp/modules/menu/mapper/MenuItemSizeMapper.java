@@ -21,8 +21,8 @@ public final class MenuItemSizeMapper {
     public static MenuItemSizeResponse toResponse(ProductItemSize size) {
         return new MenuItemSizeResponse(
                 size.getId(),
-                size.getMenuItem() == null ? null : size.getMenuItem().getId(),
-                size.getMenuItem() == null ? null : size.getMenuItem().getName(),
+                size.getProductItem() == null ? null : size.getProductItem().getId(),
+                size.getProductItem() == null ? null : size.getProductItem().getName(),
                 size.getLabel(),
                 size.getSizeValue(),
                 size.getSizeUnit(),

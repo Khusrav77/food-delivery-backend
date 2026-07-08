@@ -63,16 +63,6 @@ public class Order extends AbstractEntity {
         return order;
     }
 
-    public void addItem(OrderItem item) {
-        orderItems.add(item);
-        item.setOrder(this);
-    }
-
-    public void clearItems() {
-        orderItems.forEach(item -> item.setOrder(null));
-        orderItems.clear();
-    }
-
     public User getUser() {return user;}
     public UserAddress getAddress() {return address;}
     public OrderStatus getStatus() {return status;}
@@ -80,7 +70,7 @@ public class Order extends AbstractEntity {
     public BigDecimal getDeliveryPrice() {return deliveryPrice;}
     public BigDecimal getTotalPrice() {return totalPrice;}
     public String getComment() {return comment;}
-    public List<OrderItem> getOrderItems() {return List.copyOf(orderItems);}
+    public List<OrderItem> getOrderItems() {return orderItems;}
 
     public void setAddress(UserAddress address) {this.address = address;}
     public void setStatus(OrderStatus status) {this.status = status;}
