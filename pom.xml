@@ -31,6 +31,10 @@
 
     <modules>
         <module>application</module>
+
+        <module>shared/common-core</module>
+        <module>shared/event-api</module>
+        <module>shared/test-support</module>
     </modules>
 
 </project>
