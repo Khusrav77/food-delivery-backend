@@ -35,6 +35,17 @@
         <module>shared/common-core</module>
         <module>shared/event-api</module>
         <module>shared/test-support</module>
+
+        <module>modules/identity</module>
+        <module>modules/user</module>
+        <module>modules/franchise</module>
+        <module>modules/catalog</module>
+        <module>modules/inventory</module>
+        <module>modules/cart</module>
+        <module>modules/ordering</module>
+        <module>modules/payment</module>
+        <module>modules/delivery</module>
+        <module>modules/notification</module>
     </modules>
 
 </project>
