@@ -12,12 +12,12 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class CreateUserAccountServiceTest {
+class CreateUserAccountUCTest {
 
     @Test
     void shouldCreateNewAccountWhenPhoneDoesNotExist() {
         FakeUserAccountRepository repository = new FakeUserAccountRepository();
-        CreateUserAccountService service = new CreateUserAccountService(repository);
+        CreateUserAccountUC service = new CreateUserAccountUC(repository);
         PhoneNumber phone = new PhoneNumber("+79991234567");
 
         UserAccount account = service.execute(phone);
@@ -30,7 +30,7 @@ class CreateUserAccountServiceTest {
     @Test
     void shouldReturnExistingAccountWhenPhoneAlreadyExists() {
         FakeUserAccountRepository repository = new FakeUserAccountRepository();
-        CreateUserAccountService service = new CreateUserAccountService(repository);
+        CreateUserAccountUC service = new CreateUserAccountUC(repository);
         PhoneNumber phone = new PhoneNumber("+79991234567");
 
         UserAccount existingAccount = UserAccount.create(com.marketplace.identity.domain.model

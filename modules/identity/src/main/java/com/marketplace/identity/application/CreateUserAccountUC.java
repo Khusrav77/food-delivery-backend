@@ -7,11 +7,11 @@ import com.marketplace.identity.domain.repository.UserAccountRepository;
 
 import java.util.Objects;
 
-public final class CreateUserAccountService {
+public final class CreateUserAccountUC {
 
     private final UserAccountRepository userAccountRepository;
 
-    public CreateUserAccountService(UserAccountRepository userAccountRepository) {
+    public CreateUserAccountUC(UserAccountRepository userAccountRepository) {
         this.userAccountRepository = Objects.requireNonNull(
                 userAccountRepository,
                 "userAccountRepository must not be null");

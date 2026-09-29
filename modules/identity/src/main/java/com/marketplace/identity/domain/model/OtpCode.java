@@ -50,6 +50,7 @@ public final class OtpCode {
     public boolean isUsed() {return used;}
 
     public int attempts() {return attempts;}
+    public Instant expiresAt() {return expiresAt;}
 
     private static void validateValue(String value) {
         if (value == null || !value.matches("\\d{6}")) {
