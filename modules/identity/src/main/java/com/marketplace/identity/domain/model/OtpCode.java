@@ -6,17 +6,12 @@ import java.util.Objects;
 public final class OtpCode {
 
     private static final int MAX_ATTEMPTS = 5;
-
     private final String value;
     private final Instant expiresAt;
-
     private int attempts;
     private boolean used;
 
-    private OtpCode(
-            String value,
-            Instant expiresAt
-    ) {
+    private OtpCode(String value, Instant expiresAt) {
         this.value = Objects.requireNonNull(value, "value must not be null");
         this.expiresAt = Objects.requireNonNull(expiresAt, "expiresAt must not be null");
     }
