@@ -5,7 +5,7 @@ import com.marketplace.identity.application.port.out.OtpGeneratorPort;
 import java.security.SecureRandom;
 
 
-public class RandomOtpGeneratorPort implements OtpGeneratorPort {
+public class RandomOtpGeneratorAdapter implements OtpGeneratorPort {
     private static final int OTP_LENGTH = 6;
     private final SecureRandom random = new SecureRandom();
 

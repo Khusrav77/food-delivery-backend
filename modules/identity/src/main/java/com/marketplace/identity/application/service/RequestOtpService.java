@@ -4,7 +4,7 @@ package com.marketplace.identity.application.service;
 import com.marketplace.identity.application.command.RequestOtpCommand;
 import com.marketplace.identity.application.port.in.RequestOtpUseCase;
 import com.marketplace.identity.application.port.out.ClockPort;
-import com.marketplace.identity.application.port.out.OtpCodePort;
+import com.marketplace.identity.application.port.out.OtpStoragePort;
 import com.marketplace.identity.application.port.out.OtpGeneratorPort;
 import com.marketplace.identity.application.result.RequestOtpResult;
 import com.marketplace.identity.domain.model.OtpCode;
@@ -17,17 +17,17 @@ public final class RequestOtpService implements RequestOtpUseCase {
 
     private static final Duration OTP_TTL = Duration.ofMinutes(3);
 
-    private final OtpCodePort otpCodePort;
+    private final OtpStoragePort otpStoragePort;
     private final OtpGeneratorPort otpGeneratorPort;
     private final ClockPort clockPort;
 
     public RequestOtpService(
-            OtpCodePort otpCodePort,
+            OtpStoragePort otpStoragePort,
             OtpGeneratorPort otpGeneratorPort,
             ClockPort clockPort
     ) {
-        this.otpCodePort = Objects.requireNonNull(
-                otpCodePort, "otpCodePort must not be null");
+        this.otpStoragePort = Objects.requireNonNull(
+                otpStoragePort, "otpCodePort must not be null");
 
         this.otpGeneratorPort = Objects.requireNonNull(
                 otpGeneratorPort, "otpGeneratorPort must not be null");
@@ -45,7 +45,7 @@ public final class RequestOtpService implements RequestOtpUseCase {
         Instant expiresAt = now.plus(OTP_TTL);
         String value = otpGeneratorPort.generate();
         OtpCode otpCode = OtpCode.create(value, expiresAt);
-        otpCodePort.save(command.phone(), otpCode);
+        otpStoragePort.save(command.phone(), otpCode);
 
         return new RequestOtpResult(OTP_TTL.toSeconds());
     }

@@ -5,7 +5,7 @@ import com.marketplace.identity.application.command.VerifyOtpCommand;
 import com.marketplace.identity.application.port.in.CreateUserAccountUseCase;
 import com.marketplace.identity.application.port.in.VerifyOtpUseCase;
 import com.marketplace.identity.application.port.out.ClockPort;
-import com.marketplace.identity.application.port.out.OtpCodePort;
+import com.marketplace.identity.application.port.out.OtpStoragePort;
 
 import com.marketplace.identity.application.port.out.UserAccountPort;
 import com.marketplace.identity.application.result.VerifyOtpResult;
@@ -17,19 +17,19 @@ import java.util.Objects;
 
 public final class VerifyOtpService implements VerifyOtpUseCase {
 
-    private final OtpCodePort otpCodePort;
+    private final OtpStoragePort otpStoragePort;
     private final UserAccountPort userAccountPort;
     private final CreateUserAccountUseCase createUserAccountUseCase;
     private final ClockPort clockPort;
 
     public VerifyOtpService(
-            OtpCodePort otpCodePort,
+            OtpStoragePort otpStoragePort,
             UserAccountPort userAccountPort,
             CreateUserAccountUseCase createUserAccountUseCase,
             ClockPort clockPort
     ) {
-        this.otpCodePort = Objects.requireNonNull(
-                otpCodePort, "otpCodePort must not be null");
+        this.otpStoragePort = Objects.requireNonNull(
+                otpStoragePort, "otpCodePort must not be null");
 
         this.userAccountPort = Objects.requireNonNull(
                 userAccountPort, "userAccountRepository must not be null");
@@ -45,8 +45,7 @@ public final class VerifyOtpService implements VerifyOtpUseCase {
     public VerifyOtpResult execute(VerifyOtpCommand command) {
 
         Objects.requireNonNull(command, "command must not be null");
-
-        OtpCode otpCode = otpCodePort.findByPhone(command.phone())
+        OtpCode otpCode = otpStoragePort.findByPhone(command.phone())
                 .orElseThrow(() -> new IllegalArgumentException("OTP code not found"));
 
         Instant now = clockPort.now();

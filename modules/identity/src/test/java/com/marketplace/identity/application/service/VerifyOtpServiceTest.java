@@ -4,13 +4,14 @@ import com.marketplace.identity.application.command.CreateUserAccountCommand;
 import com.marketplace.identity.application.command.VerifyOtpCommand;
 import com.marketplace.identity.application.port.in.CreateUserAccountUseCase;
 import com.marketplace.identity.application.port.out.ClockPort;
-import com.marketplace.identity.application.port.out.OtpCodePort;
+import com.marketplace.identity.application.port.out.OtpStoragePort;
 import com.marketplace.identity.application.port.out.UserAccountPort;
 import com.marketplace.identity.application.result.VerifyOtpResult;
 import com.marketplace.identity.domain.model.OtpCode;
 import com.marketplace.identity.domain.model.PhoneNumber;
 import com.marketplace.identity.domain.model.UserAccount;
 import com.marketplace.identity.domain.model.UserId;
+import com.marketplace.identity.infrastructure.otp.InMemoryOtpStorageAdapter;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
@@ -18,36 +19,32 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
-class VerifyRequestOtpServiceTest {
+class VerifyOtpServiceTest {
 
     private static final Instant NOW = Instant.parse("2026-09-30T10:00:00Z");
-
     private static final Instant EXPIRES_AT = Instant.parse("2026-09-30T10:03:00Z");
-
     private static final PhoneNumber PHONE = new PhoneNumber("+79991234567");
 
     @Test
     void shouldVerifyOtpAndReturnUserId() {
 
-        FakeOtpCodePort otpCodePort = new FakeOtpCodePort();
+        InMemoryOtpStorageAdapter otpStorageAdapter = new InMemoryOtpStorageAdapter();
         FakeUserAccountPort userAccountPort = new FakeUserAccountPort();
-
         FakeCreateUserAccountUseCase createUserAccountUseCase =
                 new FakeCreateUserAccountUseCase();
 
         FakeClockPort clockPort = new FakeClockPort(NOW);
         OtpCode otp = OtpCode.create("123456", EXPIRES_AT);
-        otpCodePort.save(PHONE, otp);
+        otpStorageAdapter.save(PHONE, otp);
         UserId userId = UserId.generate();
         UserAccount account = UserAccount.create(userId, PHONE);
         userAccountPort.save(account);
 
         VerifyOtpService service =
                 new VerifyOtpService(
-                        otpCodePort,
+                        otpStorageAdapter,
                         userAccountPort,
                         createUserAccountUseCase,
                         clockPort);
@@ -56,19 +53,20 @@ class VerifyRequestOtpServiceTest {
         VerifyOtpResult result = service.execute(command);
 
         assertEquals(userId, result.id());
+        assertTrue(otp.isUsed());
     }
 
     @Test
     void shouldRejectWhenOtpDoesNotExist() {
 
-        FakeOtpCodePort otpCodePort = new FakeOtpCodePort();
+        InMemoryOtpStorageAdapter otpStorageAdapter = new InMemoryOtpStorageAdapter();
         FakeUserAccountPort userAccountPort = new FakeUserAccountPort();
         FakeCreateUserAccountUseCase createUserAccountUseCase =
                 new FakeCreateUserAccountUseCase();
         FakeClockPort clockPort = new FakeClockPort(NOW);
         VerifyOtpService service =
                 new VerifyOtpService(
-                        otpCodePort,
+                        otpStorageAdapter,
                         userAccountPort,
                         createUserAccountUseCase,
                         clockPort);
@@ -80,19 +78,18 @@ class VerifyRequestOtpServiceTest {
 
     @Test
     void shouldRejectInvalidOtp() {
-
-        FakeOtpCodePort otpCodePort = new FakeOtpCodePort();
+        InMemoryOtpStorageAdapter otpStorageAdapter = new InMemoryOtpStorageAdapter();
         FakeUserAccountPort userAccountPort = new FakeUserAccountPort();
         FakeCreateUserAccountUseCase createUserAccountUseCase =
                 new FakeCreateUserAccountUseCase();
         FakeClockPort clockPort = new FakeClockPort(NOW);
 
         OtpCode otp = OtpCode.create("123456", EXPIRES_AT);
-        otpCodePort.save(PHONE, otp);
+        otpStorageAdapter.save(PHONE, otp);
 
         VerifyOtpService service =
                 new VerifyOtpService(
-                        otpCodePort,
+                        otpStorageAdapter,
                         userAccountPort,
                         createUserAccountUseCase,
                         clockPort);
@@ -105,10 +102,8 @@ class VerifyRequestOtpServiceTest {
 
     @Test
     void shouldRejectExpiredOtp() {
-
-        FakeOtpCodePort otpCodePort = new FakeOtpCodePort();
+        InMemoryOtpStorageAdapter otpStorageAdapter = new InMemoryOtpStorageAdapter();
         FakeUserAccountPort userAccountPort = new FakeUserAccountPort();
-
         FakeCreateUserAccountUseCase createUserAccountUseCase =
                 new FakeCreateUserAccountUseCase();
 
@@ -116,11 +111,11 @@ class VerifyRequestOtpServiceTest {
 
         OtpCode otp = OtpCode.create("123456", EXPIRES_AT);
 
-        otpCodePort.save(PHONE, otp);
+        otpStorageAdapter.save(PHONE, otp);
 
         VerifyOtpService service =
                 new VerifyOtpService(
-                        otpCodePort,
+                        otpStorageAdapter,
                         userAccountPort,
                         createUserAccountUseCase,
                         clockPort);
@@ -134,7 +129,7 @@ class VerifyRequestOtpServiceTest {
     @Test
     void shouldReturnExistingAccount() {
 
-        FakeOtpCodePort otpCodePort = new FakeOtpCodePort();
+        InMemoryOtpStorageAdapter otpStorageAdapter = new InMemoryOtpStorageAdapter();
         FakeUserAccountPort userAccountPort = new FakeUserAccountPort();
         FakeCreateUserAccountUseCase createUserAccountUseCase =
                 new FakeCreateUserAccountUseCase();
@@ -142,14 +137,14 @@ class VerifyRequestOtpServiceTest {
 
         OtpCode otp = OtpCode.create("123456", EXPIRES_AT);
 
-        otpCodePort.save(PHONE, otp);
+        otpStorageAdapter.save(PHONE, otp);
         UserId userId = UserId.generate();
         UserAccount existingAccount = UserAccount.create(userId, PHONE);
         userAccountPort.save(existingAccount);
 
         VerifyOtpService service =
                 new VerifyOtpService(
-                        otpCodePort,
+                        otpStorageAdapter,
                         userAccountPort,
                         createUserAccountUseCase,
                         clockPort);
@@ -164,14 +159,14 @@ class VerifyRequestOtpServiceTest {
     @Test
     void shouldCreateAccountWhenAccountDoesNotExist() {
 
-        FakeOtpCodePort otpCodePort = new FakeOtpCodePort();
+        InMemoryOtpStorageAdapter otpStorageAdapter = new InMemoryOtpStorageAdapter();
         FakeUserAccountPort userAccountPort = new FakeUserAccountPort();
         FakeCreateUserAccountUseCase createUserAccountUseCase =
                 new FakeCreateUserAccountUseCase();
         FakeClockPort clockPort = new FakeClockPort(NOW);
 
         OtpCode otp = OtpCode.create("123456", EXPIRES_AT);
-        otpCodePort.save(PHONE, otp);
+        otpStorageAdapter.save(PHONE, otp);
         UserId userId = UserId.generate();
 
         UserAccount createdAccount = UserAccount.create(userId, PHONE);
@@ -179,7 +174,7 @@ class VerifyRequestOtpServiceTest {
 
         VerifyOtpService service =
                 new VerifyOtpService(
-                        otpCodePort,
+                        otpStorageAdapter,
                         userAccountPort,
                         createUserAccountUseCase,
                         clockPort);
@@ -192,26 +187,55 @@ class VerifyRequestOtpServiceTest {
         assertEquals(PHONE, createUserAccountUseCase.lastCommand.phone());
     }
 
-    private static class FakeOtpCodePort implements OtpCodePort {
+    @Test
+    void shouldRejectNullCommand() {
 
-        private final Map<String, OtpCode> storage = new HashMap<>();
+        InMemoryOtpStorageAdapter otpStorageAdapter = new InMemoryOtpStorageAdapter();
+        FakeUserAccountPort userAccountPort = new FakeUserAccountPort();
+        FakeCreateUserAccountUseCase createUserAccountUseCase =
+                new FakeCreateUserAccountUseCase();
+        FakeClockPort clockPort = new FakeClockPort(NOW);
 
-        @Override
-        public void save(PhoneNumber phone, OtpCode otp) {
-            storage.put(phone.value(), otp);
-        }
+        VerifyOtpService service =
+                new VerifyOtpService(
+                        otpStorageAdapter,
+                        userAccountPort,
+                        createUserAccountUseCase,
+                        clockPort);
 
-        @Override
-        public Optional<OtpCode> findByPhone(PhoneNumber phone) {
-            return Optional.ofNullable(
-                    storage.get(phone.value()));
-        }
-
-        @Override
-        public void deleteByPhone(PhoneNumber phone) {
-            storage.remove(phone.value());
-        }
+        assertThrows(NullPointerException.class, () -> service.execute(null));
     }
+
+    @Test
+    void shouldRejectAlreadyUsedOtp() {
+
+        InMemoryOtpStorageAdapter otpStorageAdapter = new InMemoryOtpStorageAdapter();
+        FakeUserAccountPort userAccountPort = new FakeUserAccountPort();
+        FakeCreateUserAccountUseCase createUserAccountUseCase =
+                new FakeCreateUserAccountUseCase();
+        FakeClockPort clockPort = new FakeClockPort(NOW);
+
+        OtpCode otp = OtpCode.create("123456", EXPIRES_AT);
+        otpStorageAdapter.save(PHONE, otp);
+
+        UserId userId = UserId.generate();
+        UserAccount account = UserAccount.create(userId, PHONE);
+        userAccountPort.save(account);
+
+        VerifyOtpService service =
+                new VerifyOtpService(
+                        otpStorageAdapter,
+                        userAccountPort,
+                        createUserAccountUseCase,
+                        clockPort);
+
+        VerifyOtpCommand command = new VerifyOtpCommand(PHONE, "123456");
+
+        service.execute(command);
+
+        assertThrows(IllegalArgumentException.class, () -> service.execute(command));
+    }
+
 
     private static class FakeUserAccountPort implements UserAccountPort {
 
@@ -229,8 +253,7 @@ class VerifyRequestOtpServiceTest {
         }
     }
 
-    private static class FakeCreateUserAccountUseCase
-            implements CreateUserAccountUseCase {
+    private static class FakeCreateUserAccountUseCase implements CreateUserAccountUseCase {
 
         private UserAccount result;
         private int executionCount;
@@ -247,7 +270,6 @@ class VerifyRequestOtpServiceTest {
     private static class FakeClockPort implements ClockPort {
 
         private final Instant now;
-
         private FakeClockPort(Instant now) {
             this.now = now;
         }

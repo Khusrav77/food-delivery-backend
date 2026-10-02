@@ -13,9 +13,7 @@ import com.marketplace.identity.infrastructure.event.InMemoryEventPublisherAdapt
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
