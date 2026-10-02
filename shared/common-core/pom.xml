@@ -14,7 +14,6 @@
     </parent>
 
     <artifactId>common-core</artifactId>
-
     <name>common-core</name>
     <description>Common domain primitives and shared types</description>
 
