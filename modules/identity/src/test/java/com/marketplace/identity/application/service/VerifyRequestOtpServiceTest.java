@@ -21,7 +21,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class VerifyOtpServiceTest {
+class VerifyRequestOtpServiceTest {
 
     private static final Instant NOW = Instant.parse("2026-09-30T10:00:00Z");
 

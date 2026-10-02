@@ -13,7 +13,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Objects;
 
-public final class OtpService implements RequestOtpUseCase {
+public final class RequestOtpService implements RequestOtpUseCase {
 
     private static final Duration OTP_TTL = Duration.ofMinutes(3);
 
@@ -21,7 +21,7 @@ public final class OtpService implements RequestOtpUseCase {
     private final OtpGeneratorPort otpGeneratorPort;
     private final ClockPort clockPort;
 
-    public OtpService(
+    public RequestOtpService(
             OtpCodePort otpCodePort,
             OtpGeneratorPort otpGeneratorPort,
             ClockPort clockPort

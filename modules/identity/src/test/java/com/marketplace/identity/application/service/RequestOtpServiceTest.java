@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class OtpServiceTest {
+class RequestOtpServiceTest {
 
     private static final Instant NOW = Instant.parse("2026-09-30T10:00:00Z");
     private static final String OTP_VALUE = "123456";
@@ -29,7 +29,7 @@ class OtpServiceTest {
         FakeClock clock = new FakeClock(NOW);
         FakeOtpGenerator otpGenerator = new FakeOtpGenerator(OTP_VALUE);
         FakeOtpCodePort otpCodePort = new FakeOtpCodePort();
-        OtpService service = new OtpService(
+        RequestOtpService service = new RequestOtpService(
                 otpCodePort,
                 otpGenerator,
                 clock);
@@ -52,7 +52,7 @@ class OtpServiceTest {
         FakeClock clock = new FakeClock(NOW);
         FakeOtpGenerator otpGenerator = new FakeOtpGenerator(OTP_VALUE);
         FakeOtpCodePort otpCodePort = new FakeOtpCodePort();
-        OtpService service = new OtpService(
+        RequestOtpService service = new RequestOtpService(
                 otpCodePort,
                 otpGenerator,
                 clock);
@@ -71,7 +71,7 @@ class OtpServiceTest {
 
         FakeOtpGenerator otpGenerator = new FakeOtpGenerator(OTP_VALUE);
         FakeOtpCodePort otpCodePort = new FakeOtpCodePort();
-        OtpService service = new OtpService(
+        RequestOtpService service = new RequestOtpService(
                 otpCodePort,
                 otpGenerator,
                 new FakeClock(NOW));
@@ -88,7 +88,7 @@ class OtpServiceTest {
         Instant customNow = Instant.parse("2026-09-30T15:30:00Z");
         FakeClock clock = new FakeClock(customNow);
         FakeOtpCodePort otpCodePort = new FakeOtpCodePort();
-        OtpService service = new OtpService(
+        RequestOtpService service = new RequestOtpService(
                 otpCodePort,
                 new FakeOtpGenerator(OTP_VALUE),
                 clock);
@@ -105,7 +105,7 @@ class OtpServiceTest {
     @Test
     void shouldRejectNullCommand() {
 
-        OtpService service = new OtpService(
+        RequestOtpService service = new RequestOtpService(
                 new FakeOtpCodePort(),
                 new FakeOtpGenerator(OTP_VALUE),
                 new FakeClock(NOW));
@@ -118,7 +118,7 @@ class OtpServiceTest {
 
         FakeOtpCodePort otpCodePort = new FakeOtpCodePort();
 
-        OtpService service = new OtpService(
+        RequestOtpService service = new RequestOtpService(
                 otpCodePort,
                 new FakeOtpGenerator(OTP_VALUE),
                 new FakeClock(NOW));
