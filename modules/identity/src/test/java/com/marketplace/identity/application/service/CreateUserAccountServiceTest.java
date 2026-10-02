@@ -9,6 +9,7 @@ import com.marketplace.identity.domain.model.PhoneNumber;
 import com.marketplace.identity.domain.model.UserAccount;
 import com.marketplace.identity.domain.model.UserId;
 import com.marketplace.event.DomainEvent;
+import com.marketplace.identity.infrastructure.event.InMemoryEventPublisherAdapter;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
@@ -28,13 +29,13 @@ class CreateUserAccountServiceTest {
     void shouldCreateNewAccountAndPublishEvent() {
 
         FakeUserAccountPort userAccountPort = new FakeUserAccountPort();
-        FakeEventPublisherPort eventPublisherPort = new FakeEventPublisherPort();
+        InMemoryEventPublisherAdapter inMemoryEventPublisherAdapter = new InMemoryEventPublisherAdapter();
         FakeClockPort clockPort = new FakeClockPort(NOW);
 
         CreateUserAccountService service =
                 new CreateUserAccountService(
                         userAccountPort,
-                        eventPublisherPort,
+                        inMemoryEventPublisherAdapter,
                         clockPort);
 
         PhoneNumber phone = new PhoneNumber("+79991234567");
@@ -45,9 +46,9 @@ class CreateUserAccountServiceTest {
         assertEquals(phone, account.phone());
 
         assertEquals(account, userAccountPort.findByPhone(phone).orElseThrow());
-        assertEquals(1, eventPublisherPort.events().size());
+        assertEquals(1, inMemoryEventPublisherAdapter.events().size());
 
-        DomainEvent event = eventPublisherPort.events().getFirst();
+        DomainEvent event = inMemoryEventPublisherAdapter.events().getFirst();
 
         assertInstanceOf(UserAccountCreated.class, event);
 
@@ -62,13 +63,13 @@ class CreateUserAccountServiceTest {
     void shouldReturnExistingAccountWithoutPublishingEvent() {
 
         FakeUserAccountPort userAccountPort = new FakeUserAccountPort();
-        FakeEventPublisherPort eventPublisherPort = new FakeEventPublisherPort();
+        InMemoryEventPublisherAdapter inMemoryEventPublisherAdapter = new InMemoryEventPublisherAdapter();
         FakeClockPort clockPort = new FakeClockPort(NOW);
 
         CreateUserAccountService service =
                 new CreateUserAccountService(
                         userAccountPort,
-                        eventPublisherPort,
+                        inMemoryEventPublisherAdapter,
                         clockPort);
 
         PhoneNumber phone = new PhoneNumber("+79991234567");
@@ -78,20 +79,20 @@ class CreateUserAccountServiceTest {
         UserAccount result = service.execute(command);
 
         assertEquals(existingAccount, result);
-        assertTrue(eventPublisherPort.events().isEmpty());
+        assertTrue(inMemoryEventPublisherAdapter.events().isEmpty());
     }
 
     @Test
     void shouldRejectNullCommand() {
 
         FakeUserAccountPort userAccountPort = new FakeUserAccountPort();
-        FakeEventPublisherPort eventPublisherPort = new FakeEventPublisherPort();
+        InMemoryEventPublisherAdapter inMemoryEventPublisherAdapter = new InMemoryEventPublisherAdapter();
         FakeClockPort clockPort = new FakeClockPort(NOW);
 
         CreateUserAccountService service =
                 new CreateUserAccountService(
                         userAccountPort,
-                        eventPublisherPort,
+                        inMemoryEventPublisherAdapter,
                         clockPort);
 
         assertThrows(NullPointerException.class, () -> service.execute(null));
@@ -111,20 +112,6 @@ class CreateUserAccountServiceTest {
         public UserAccount save(UserAccount userAccount) {
             accounts.put(userAccount.phone().value(), userAccount);
             return userAccount;
-        }
-    }
-
-    private static class FakeEventPublisherPort implements EventPublisherPort {
-
-        private final List<DomainEvent> events = new ArrayList<>();
-
-        @Override
-        public void publish(DomainEvent event) {
-            events.add(event);
-        }
-
-        public List<DomainEvent> events() {
-            return events;
         }
     }
 
