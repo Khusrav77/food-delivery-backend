@@ -25,6 +25,11 @@
             <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.marketplace</groupId>
+            <artifactId>event-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
     </dependencies>
 

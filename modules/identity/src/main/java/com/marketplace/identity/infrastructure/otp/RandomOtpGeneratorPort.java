@@ -1,11 +1,11 @@
 package com.marketplace.identity.infrastructure.otp;
 
-import com.marketplace.identity.application.OtpGenerator;
+import com.marketplace.identity.application.port.out.OtpGeneratorPort;
 
 import java.security.SecureRandom;
 
 
-public class RandomOtpGenerator implements OtpGenerator {
+public class RandomOtpGeneratorPort implements OtpGeneratorPort {
     private static final int OTP_LENGTH = 6;
     private final SecureRandom random = new SecureRandom();
 

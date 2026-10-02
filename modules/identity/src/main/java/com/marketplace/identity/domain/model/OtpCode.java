@@ -48,7 +48,6 @@ public final class OtpCode {
     }
 
     public boolean isUsed() {return used;}
-
     public int attempts() {return attempts;}
     public Instant expiresAt() {return expiresAt;}
 
