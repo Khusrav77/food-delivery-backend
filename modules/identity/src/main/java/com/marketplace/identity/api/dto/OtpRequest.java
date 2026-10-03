@@ -1,6 +1,6 @@
 package com.marketplace.identity.api.dto;
 
-public record RequestOtpRequest(
+public record OtpRequest(
         String phone
 ) {
 }

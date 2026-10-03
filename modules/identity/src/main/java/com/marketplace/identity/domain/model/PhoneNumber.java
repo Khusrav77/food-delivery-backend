@@ -1,6 +1,5 @@
 package com.marketplace.identity.domain.model;
 
-
 import java.util.Objects;
 
 public record PhoneNumber(String value)  {

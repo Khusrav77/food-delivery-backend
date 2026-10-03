@@ -1,6 +1,6 @@
 package com.marketplace.identity.api.dto;
 
-public record RequestOtpResponse(
+public record OtpResponse(
         long expiresInSeconds
 ) {
 }

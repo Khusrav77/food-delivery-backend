@@ -1,5 +1,6 @@
-package com.marketplace.identity.api;
+package com.marketplace.identity.api.controller;
 
+import com.marketplace.identity.api.mapper.AuthMapper;
 import com.marketplace.identity.application.command.RequestOtpCommand;
 import com.marketplace.identity.application.command.VerifyOtpCommand;
 import com.marketplace.identity.application.port.in.RequestOtpUseCase;
@@ -7,8 +8,8 @@ import com.marketplace.identity.application.port.in.VerifyOtpUseCase;
 import com.marketplace.identity.application.result.RequestOtpResult;
 import com.marketplace.identity.application.result.VerifyOtpResult;
 import com.marketplace.identity.domain.model.PhoneNumber;
-import com.marketplace.identity.api.dto.RequestOtpRequest;
-import com.marketplace.identity.api.dto.RequestOtpResponse;
+import com.marketplace.identity.api.dto.OtpRequest;
+import com.marketplace.identity.api.dto.OtpResponse;
 import com.marketplace.identity.api.dto.VerifyOtpRequest;
 import com.marketplace.identity.api.dto.VerifyOtpResponse;
 import org.springframework.http.ResponseEntity;
@@ -36,21 +37,22 @@ public final class AuthController {
     }
 
     @PostMapping("/otp/request")
-    public ResponseEntity<RequestOtpResponse> requestOtp(
-            @RequestBody RequestOtpRequest request) {
-        RequestOtpCommand command = new RequestOtpCommand(new PhoneNumber(request.phone()));
+    public ResponseEntity<OtpResponse> requestOtp(
+            @RequestBody OtpRequest request) {
+        RequestOtpCommand command = AuthMapper.toCommand(request);
+
         RequestOtpResult result = requestOtpUseCase.execute(command);
 
-        return ResponseEntity.ok(new RequestOtpResponse(result.expiresInSeconds()));
+        return ResponseEntity.ok(AuthMapper.toResponse(result));
     }
 
     @PostMapping("/otp/verify")
     public ResponseEntity<VerifyOtpResponse> verifyOtp(
             @RequestBody VerifyOtpRequest request) {
-        VerifyOtpCommand command = new VerifyOtpCommand(new PhoneNumber(request.phone()), request.code());
-        VerifyOtpResult result = verifyOtpUseCase.execute(command);
-        UUID userId = result.id().value();
+        VerifyOtpCommand command = AuthMapper.toCommand(request);
 
-        return ResponseEntity.ok(new VerifyOtpResponse(userId));
+        VerifyOtpResult result = verifyOtpUseCase.execute(command);
+
+        return ResponseEntity.ok(AuthMapper.toResponse(result));
     }
 }
