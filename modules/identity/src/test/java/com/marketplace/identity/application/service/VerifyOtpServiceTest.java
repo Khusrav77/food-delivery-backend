@@ -236,6 +236,38 @@ class VerifyOtpServiceTest {
         assertThrows(IllegalArgumentException.class, () -> service.execute(command));
     }
 
+    @Test
+    void shouldRejectOtpAfterMaximumAttempts() {
+        InMemoryOtpStorageAdapter otpStorage = new InMemoryOtpStorageAdapter();
+        FakeUserAccountPort userAccountPort = new FakeUserAccountPort();
+        FakeCreateUserAccountUseCase createUserAccountUseCase = new FakeCreateUserAccountUseCase();
+        FakeClockPort clockPort = new FakeClockPort(NOW);
+
+        OtpCode otp = OtpCode.create("123456", EXPIRES_AT);
+        otpStorage.save(PHONE, otp);
+
+        VerifyOtpService service =
+                new VerifyOtpService(
+                        otpStorage,
+                        userAccountPort,
+                        createUserAccountUseCase,
+                        clockPort);
+
+        VerifyOtpCommand invalidCommand = new VerifyOtpCommand(PHONE, "654321");
+
+        for (int i = 0; i < 5; i++) {
+            assertThrows(IllegalArgumentException.class,
+                    () -> service.execute(invalidCommand));
+        }
+
+        assertEquals(5, otp.attempts());
+
+        VerifyOtpCommand validCommand = new VerifyOtpCommand(PHONE, "123456");
+
+        assertThrows(IllegalArgumentException.class, () -> service.execute(validCommand));
+        assertEquals(5, otp.attempts());
+    }
+
 
     private static class FakeUserAccountPort implements UserAccountPort {
 
