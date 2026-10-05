@@ -52,7 +52,7 @@ class VerifyOtpServiceTest {
         VerifyOtpCommand command = new VerifyOtpCommand(PHONE, "123456");
         VerifyOtpResult result = service.execute(command);
 
-        assertEquals(userId, result.id());
+        assertEquals(userId, result.account().id());
         assertTrue(otp.isUsed());
     }
 
@@ -152,7 +152,7 @@ class VerifyOtpServiceTest {
         VerifyOtpCommand command = new VerifyOtpCommand(PHONE, "123456");
         VerifyOtpResult result = service.execute(command);
 
-        assertEquals(userId, result.id());
+        assertEquals(userId, result.account().id());
         assertEquals(0, createUserAccountUseCase.executionCount);
     }
 
@@ -182,7 +182,7 @@ class VerifyOtpServiceTest {
         VerifyOtpCommand command = new VerifyOtpCommand(PHONE, "123456");
         VerifyOtpResult result = service.execute(command);
 
-        assertEquals(userId, result.id());
+        assertEquals(userId, result.account().id());
         assertEquals(1, createUserAccountUseCase.executionCount);
         assertEquals(PHONE, createUserAccountUseCase.lastCommand.phone());
     }

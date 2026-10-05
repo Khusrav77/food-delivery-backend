@@ -57,10 +57,8 @@ public final class VerifyOtpService implements VerifyOtpUseCase {
 
         UserAccount account = userAccountPort
                 .findByPhone(command.phone())
-                .orElseGet(() ->
-                        createUserAccountUseCase.execute(
+                .orElseGet(() -> createUserAccountUseCase.execute(
                                 new CreateUserAccountCommand(command.phone())));
-
-        return new VerifyOtpResult(account.id());
+        return new VerifyOtpResult(account);
     }
 }

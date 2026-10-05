@@ -35,6 +35,6 @@ public final class AuthMapper {
 
     public static VerifyOtpResponse toResponse(VerifyOtpResult result) {
         Objects.requireNonNull(result, "result must not be null");
-        return new VerifyOtpResponse(result.id().value());
+        return new VerifyOtpResponse(result.account().id().value());
     }
 }
