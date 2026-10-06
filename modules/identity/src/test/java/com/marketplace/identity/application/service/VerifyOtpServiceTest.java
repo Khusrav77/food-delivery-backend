@@ -279,6 +279,11 @@ class VerifyOtpServiceTest {
         }
 
         @Override
+        public Optional<UserAccount> findById(UserId userId) {
+            return Optional.empty();
+        }
+
+        @Override
         public UserAccount save(UserAccount userAccount) {
             storage.put(userAccount.phone().value(), userAccount);
             return userAccount;

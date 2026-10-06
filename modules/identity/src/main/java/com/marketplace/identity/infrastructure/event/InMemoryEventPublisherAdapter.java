@@ -2,7 +2,6 @@ package com.marketplace.identity.infrastructure.event;
 
 import com.marketplace.identity.application.port.out.EventPublisherPort;
 import com.marketplace.event.DomainEvent;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;

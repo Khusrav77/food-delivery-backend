@@ -6,11 +6,9 @@ import com.marketplace.identity.application.result.RefreshToken;
 import com.marketplace.identity.domain.model.Role;
 import com.marketplace.identity.domain.model.UserAccount;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Objects;

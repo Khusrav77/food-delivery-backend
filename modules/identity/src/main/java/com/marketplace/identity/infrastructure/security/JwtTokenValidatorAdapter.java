@@ -7,13 +7,13 @@ import com.marketplace.identity.domain.model.UserId;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.SecurityException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
 public final class JwtTokenValidatorAdapter implements TokenValidatorPort {
@@ -98,7 +98,7 @@ public final class JwtTokenValidatorAdapter implements TokenValidatorPort {
         try {
             return roleNames.stream()
                     .map(Role::valueOf)
-                    .collect(java.util.stream.Collectors.toUnmodifiableSet());
+                    .collect(Collectors.toUnmodifiableSet());
 
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Invalid role in JWT", e);

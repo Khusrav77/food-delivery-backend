@@ -1,9 +1,10 @@
 package com.marketplace.identity.infrastructure.time;
 
 import com.marketplace.identity.application.port.out.ClockPort;
+import org.springframework.stereotype.Component;
 
 import java.time.Instant;
-
+@Component
 public class SystemClockAdapter implements ClockPort {
 
     @Override

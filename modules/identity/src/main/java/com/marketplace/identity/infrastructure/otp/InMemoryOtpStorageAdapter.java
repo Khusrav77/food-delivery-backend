@@ -3,12 +3,14 @@ package com.marketplace.identity.infrastructure.otp;
 import com.marketplace.identity.application.port.out.OtpStoragePort;
 import com.marketplace.identity.domain.model.OtpCode;
 import com.marketplace.identity.domain.model.PhoneNumber;
+import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+@Component
 public final class InMemoryOtpStorageAdapter implements OtpStoragePort {
 
     private final ConcurrentMap<String, OtpCode> storage =

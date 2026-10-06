@@ -29,6 +29,94 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
+    <dependencyManagement>
+        <dependencies>
+
+            <!-- Shared modules -->
+
+            <dependency>
+                <groupId>com.marketplace</groupId>
+                <artifactId>common-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.marketplace</groupId>
+                <artifactId>event-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.marketplace</groupId>
+                <artifactId>test-support</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- Domain modules -->
+
+            <dependency>
+                <groupId>com.marketplace</groupId>
+                <artifactId>identity</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.marketplace</groupId>
+                <artifactId>user</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.marketplace</groupId>
+                <artifactId>franchise</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.marketplace</groupId>
+                <artifactId>catalog</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.marketplace</groupId>
+                <artifactId>inventory</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.marketplace</groupId>
+                <artifactId>cart</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.marketplace</groupId>
+                <artifactId>ordering</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.marketplace</groupId>
+                <artifactId>payment</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.marketplace</groupId>
+                <artifactId>delivery</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.marketplace</groupId>
+                <artifactId>notification</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
     <modules>
         <module>application</module>
 

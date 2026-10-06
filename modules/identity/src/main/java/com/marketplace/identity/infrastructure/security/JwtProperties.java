@@ -1,8 +1,10 @@
 package com.marketplace.identity.infrastructure.security;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import java.time.Duration;
 import java.util.Objects;
 
+@ConfigurationProperties(prefix = "security.jwt")
 public record JwtProperties(
         String secretKey,
         Duration accessTokenTtl,

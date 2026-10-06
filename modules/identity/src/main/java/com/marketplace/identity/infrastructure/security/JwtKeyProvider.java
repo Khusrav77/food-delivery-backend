@@ -1,11 +1,13 @@
 package com.marketplace.identity.infrastructure.security;
 
 import io.jsonwebtoken.security.Keys;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
+@Component
 public final class JwtKeyProvider {
 
     private JwtKeyProvider() {}

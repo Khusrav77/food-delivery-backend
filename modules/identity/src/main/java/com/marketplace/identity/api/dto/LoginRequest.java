@@ -1,6 +1,6 @@
 package com.marketplace.identity.api.dto;
 
-public record VerifyOtpRequest(
+public record LoginRequest(
         String phone,
         String code
 ) {
