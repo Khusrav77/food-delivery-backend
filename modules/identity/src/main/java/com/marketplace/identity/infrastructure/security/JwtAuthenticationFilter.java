@@ -27,7 +27,8 @@ public final class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     public JwtAuthenticationFilter(TokenValidatorPort tokenValidatorPort) {
         this.tokenValidatorPort = Objects.requireNonNull(
-                tokenValidatorPort, "tokenValidatorPort must not be null");
+                tokenValidatorPort,
+                "tokenValidatorPort must not be null");
     }
 
     @Override
@@ -44,11 +45,18 @@ public final class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        String token = authorization.substring(BEARER_PREFIX.length());
+        String token = authorization.substring(BEARER_PREFIX.length()).trim();
+
+        if (token.isBlank()) {
+            SecurityContextHolder.clearContext();
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
 
         try {
             ValidatedToken validatedToken = tokenValidatorPort.validateAccessToken(token);
-            var authorities = toAuthorities(validatedToken.roles());
+
+            Set<SimpleGrantedAuthority> authorities = toAuthorities(validatedToken.roles());
 
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(
@@ -58,13 +66,12 @@ public final class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
+            filterChain.doFilter(request, response);
+
         } catch (IllegalArgumentException exception) {
             SecurityContextHolder.clearContext();
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
         }
-
-        filterChain.doFilter(request, response);
     }
 
     private Set<SimpleGrantedAuthority> toAuthorities(Set<Role> roles) {

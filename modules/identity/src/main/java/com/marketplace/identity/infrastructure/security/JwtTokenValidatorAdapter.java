@@ -60,7 +60,7 @@ public final class JwtTokenValidatorAdapter implements TokenValidatorPort {
 
             return new ValidatedToken(userId, roles);
 
-        } catch (JwtException e) {
+        } catch (JwtException | IllegalArgumentException e) {
             throw new IllegalArgumentException("Invalid JWT token", e);
         }
     }
