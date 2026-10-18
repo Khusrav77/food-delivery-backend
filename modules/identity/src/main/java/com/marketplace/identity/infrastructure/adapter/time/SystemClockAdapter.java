@@ -1,4 +1,4 @@
-package com.marketplace.identity.infrastructure.time;
+package com.marketplace.identity.infrastructure.adapter.time;
 
 import com.marketplace.identity.application.port.out.ClockPort;
 import org.springframework.stereotype.Component;

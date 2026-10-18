@@ -4,14 +4,13 @@ import com.marketplace.identity.application.command.CreateUserAccountCommand;
 import com.marketplace.identity.application.command.VerifyOtpCommand;
 import com.marketplace.identity.application.port.in.CreateUserAccountUseCase;
 import com.marketplace.identity.application.port.out.ClockPort;
-import com.marketplace.identity.application.port.out.OtpStoragePort;
 import com.marketplace.identity.application.port.out.UserAccountPort;
 import com.marketplace.identity.application.result.VerifyOtpResult;
 import com.marketplace.identity.domain.model.OtpCode;
 import com.marketplace.identity.domain.model.PhoneNumber;
 import com.marketplace.identity.domain.model.UserAccount;
 import com.marketplace.identity.domain.model.UserId;
-import com.marketplace.identity.infrastructure.otp.InMemoryOtpStorageAdapter;
+import com.marketplace.identity.infrastructure.adapter.otp.InMemoryOtpStorageAdapter;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;

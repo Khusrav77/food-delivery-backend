@@ -2,6 +2,7 @@ package com.marketplace.identity.infrastructure.otp;
 
 import com.marketplace.identity.domain.model.OtpCode;
 import com.marketplace.identity.domain.model.PhoneNumber;
+import com.marketplace.identity.infrastructure.adapter.otp.InMemoryOtpStorageAdapter;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;

@@ -6,7 +6,7 @@ import com.marketplace.identity.application.port.out.OtpGeneratorPort;
 import com.marketplace.identity.application.result.RequestOtpResult;
 import com.marketplace.identity.domain.model.OtpCode;
 import com.marketplace.identity.domain.model.PhoneNumber;
-import com.marketplace.identity.infrastructure.otp.InMemoryOtpStorageAdapter;
+import com.marketplace.identity.infrastructure.adapter.otp.InMemoryOtpStorageAdapter;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;

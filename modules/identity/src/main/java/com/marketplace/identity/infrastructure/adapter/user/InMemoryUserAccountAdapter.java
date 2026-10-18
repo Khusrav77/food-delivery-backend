@@ -1,4 +1,4 @@
-package com.marketplace.identity.infrastructure.user;
+package com.marketplace.identity.infrastructure.adapter.user;
 
 import com.marketplace.identity.application.port.out.UserAccountPort;
 import com.marketplace.identity.domain.model.PhoneNumber;

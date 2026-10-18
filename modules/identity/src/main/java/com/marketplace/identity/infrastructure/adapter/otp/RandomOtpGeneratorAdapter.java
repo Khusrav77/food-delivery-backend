@@ -1,4 +1,4 @@
-package com.marketplace.identity.infrastructure.otp;
+package com.marketplace.identity.infrastructure.adapter.otp;
 
 import com.marketplace.identity.application.port.out.OtpGeneratorPort;
 import org.springframework.stereotype.Component;

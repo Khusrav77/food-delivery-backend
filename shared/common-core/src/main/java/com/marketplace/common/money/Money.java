@@ -23,6 +23,7 @@ public record Money(
     }
 
     public static Money zero(String currency) {
+
         return new Money(BigDecimal.ZERO.setScale(2), currency);
     }
 
