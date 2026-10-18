@@ -43,6 +43,6 @@ public final class RequestOtpService implements RequestOtpUseCase {
         String value = otpGeneratorPort.generate();
         OtpCode otpCode = OtpCode.create(value, expiresAt);
         otpStoragePort.save(command.phone(), otpCode);
-        return new RequestOtpResult(OTP_TTL.toSeconds());
+        return new RequestOtpResult(OTP_TTL.toSeconds(), value);
     }
 }

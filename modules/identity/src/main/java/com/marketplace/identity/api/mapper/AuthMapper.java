@@ -20,9 +20,11 @@ public final class AuthMapper {
         return new RequestOtpCommand(new PhoneNumber(request.phone()));
     }
 
-    public static OtpResponse toResponse(RequestOtpResult result) {
+    public static OtpResponse toResponse(RequestOtpResult result, boolean includeDebugCode) {
         Objects.requireNonNull(result, "result must not be null");
-        return new OtpResponse(result.expiresInSeconds());
+        return new OtpResponse(
+                result.expiresInSeconds(),
+                includeDebugCode ? result.otpCode() : null);
     }
 
     public static AuthenticateCommand toCommand(LoginRequest request) {

@@ -37,6 +37,7 @@ class RequestOtpServiceTest {
         OtpCode otpCode = otpStorage.findByPhone(PHONE).orElseThrow();
 
         assertEquals(180, result.expiresInSeconds());
+        assertEquals(OTP_VALUE, result.otpCode());
         assertNotNull(otpCode);
         assertFalse(otpCode.isUsed());
         assertEquals(0, otpCode.attempts());
