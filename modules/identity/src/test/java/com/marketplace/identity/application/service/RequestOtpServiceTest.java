@@ -3,6 +3,8 @@ package com.marketplace.identity.application.service;
 import com.marketplace.identity.application.command.RequestOtpCommand;
 import com.marketplace.identity.application.port.out.ClockPort;
 import com.marketplace.identity.application.port.out.OtpGeneratorPort;
+import com.marketplace.identity.application.port.out.OtpRequestRateLimitDecision;
+import com.marketplace.identity.application.port.out.OtpRequestRateLimiterPort;
 import com.marketplace.identity.application.result.RequestOtpResult;
 import com.marketplace.identity.domain.model.OtpCode;
 import com.marketplace.identity.domain.model.PhoneNumber;
@@ -29,10 +31,11 @@ class RequestOtpServiceTest {
         InMemoryOtpStorageAdapter otpStorage = new InMemoryOtpStorageAdapter();
         RequestOtpService service = new RequestOtpService(
                         otpStorage,
+                        new PermissiveRateLimiter(),
                         new FixedOtpGenerator(OTP_VALUE),
                         new FixedClock(NOW));
 
-        RequestOtpResult result = service.execute(new RequestOtpCommand(PHONE));
+        RequestOtpResult result = service.execute(new RequestOtpCommand(PHONE, "192.0.2.10"));
 
         OtpCode otpCode = otpStorage.findByPhone(PHONE).orElseThrow();
 
@@ -50,10 +53,11 @@ class RequestOtpServiceTest {
         InMemoryOtpStorageAdapter otpStorage = new InMemoryOtpStorageAdapter();
         RequestOtpService service = new RequestOtpService(
                         otpStorage,
+                        new PermissiveRateLimiter(),
                         new FixedOtpGenerator(OTP_VALUE),
                         new FixedClock(NOW));
 
-        service.execute(new RequestOtpCommand(PHONE));
+        service.execute(new RequestOtpCommand(PHONE, "192.0.2.10"));
         OtpCode otpCode = otpStorage.findByPhone(PHONE).orElseThrow();
 
         assertTrue(otpCode.verify(OTP_VALUE, NOW.plusSeconds(179)));
@@ -66,10 +70,11 @@ class RequestOtpServiceTest {
         InMemoryOtpStorageAdapter otpStorage = new InMemoryOtpStorageAdapter();
         RequestOtpService service = new RequestOtpService(
                         otpStorage,
+                        new PermissiveRateLimiter(),
                         new FixedOtpGenerator(OTP_VALUE),
                         new FixedClock(customNow));
 
-        service.execute(new RequestOtpCommand(PHONE));
+        service.execute(new RequestOtpCommand(PHONE, "192.0.2.10"));
         OtpCode otpCode = otpStorage.findByPhone(PHONE).orElseThrow();
 
         assertEquals(customNow.plusSeconds(180), otpCode.expiresAt());
@@ -80,6 +85,7 @@ class RequestOtpServiceTest {
 
         RequestOtpService service = new RequestOtpService(
                         new InMemoryOtpStorageAdapter(),
+                        new PermissiveRateLimiter(),
                         new FixedOtpGenerator(OTP_VALUE),
                         new FixedClock(NOW));
 
@@ -92,10 +98,11 @@ class RequestOtpServiceTest {
         InMemoryOtpStorageAdapter otpStorage = new InMemoryOtpStorageAdapter();
         RequestOtpService service = new RequestOtpService(
                         otpStorage,
+                        new PermissiveRateLimiter(),
                         new FixedOtpGenerator(OTP_VALUE),
                         new FixedClock(NOW));
 
-        service.execute(new RequestOtpCommand(PHONE));
+        service.execute(new RequestOtpCommand(PHONE, "192.0.2.10"));
         OtpCode otpCode = otpStorage.findByPhone(PHONE).orElseThrow();
 
         assertTrue(otpCode.verify(OTP_VALUE, NOW.plusSeconds(179)));
@@ -126,6 +133,13 @@ class RequestOtpServiceTest {
         @Override
         public String generate() {
             return value;
+        }
+    }
+
+    private static final class PermissiveRateLimiter implements OtpRequestRateLimiterPort {
+        @Override
+        public OtpRequestRateLimitDecision tryAcquire(PhoneNumber phone, String clientIp) {
+            return OtpRequestRateLimitDecision.permitted();
         }
     }
 }

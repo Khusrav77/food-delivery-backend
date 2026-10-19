@@ -3,11 +3,9 @@ package com.marketplace.identity.application.port.out;
 import com.marketplace.identity.domain.model.OtpCode;
 import com.marketplace.identity.domain.model.PhoneNumber;
 
-
-import java.util.Optional;
+import java.time.Instant;
 
 public interface OtpStoragePort {
     void save(PhoneNumber phone, OtpCode otp);
-    Optional<OtpCode> findByPhone(PhoneNumber phone);
-    void deleteByPhone(PhoneNumber phone);
+    boolean verify(PhoneNumber phone, String candidate, Instant now);
 }

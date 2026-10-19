@@ -1,23 +1,28 @@
-version: '3.8'
-
 volumes:
   postgres_data:
 
 services:
-
   postgres:
-    image: postgres:15
-    container_name: food_delivery_db
-
-    restart: always
-
+    image: postgres:17
+    container_name: marketplace-postgres
     environment:
-      POSTGRES_DB: food_delivery_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-
+      POSTGRES_DB: marketplace
+      POSTGRES_USER: marketplace
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set}
     ports:
-      - "5437:5432"
-
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U marketplace -d marketplace"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: food_delivery_redis
+    restart: always
+    ports:
+      - "127.0.0.1:${REDIS_HOST_PORT:-6379}:6379"

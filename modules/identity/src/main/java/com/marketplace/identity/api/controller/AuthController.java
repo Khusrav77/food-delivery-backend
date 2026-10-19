@@ -3,6 +3,7 @@ package com.marketplace.identity.api.controller;
 import com.marketplace.identity.api.dto.AuthenticatedSessionResponse;
 import com.marketplace.identity.api.dto.*;
 import com.marketplace.identity.api.mapper.AuthMapper;
+import com.marketplace.identity.api.request.ClientIpResolver;
 import com.marketplace.identity.application.command.AuthenticateCommand;
 import com.marketplace.identity.application.command.RefreshTokenCommand;
 import com.marketplace.identity.application.command.RequestOtpCommand;
@@ -13,11 +14,11 @@ import com.marketplace.identity.application.result.AuthenticationResult;
 import com.marketplace.identity.application.result.RefreshTokenResult;
 import com.marketplace.identity.application.result.RequestOtpResult;
 import com.marketplace.identity.domain.model.UserId;
-import com.marketplace.identity.api.dto.AuthenticatedSessionResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Objects;
 import java.util.Set;
@@ -32,11 +33,13 @@ public final class AuthController {
     private final AuthenticateUseCase authenticateUseCase;
     private final RefreshTokenUseCase refreshTokenUseCase;
     private final boolean includeOtpDebugCode;
+    private final ClientIpResolver clientIpResolver;
 
     public AuthController(
             RequestOtpUseCase requestOtpUseCase,
             AuthenticateUseCase authenticateUseCase,
             RefreshTokenUseCase refreshTokenUseCase,
+            ClientIpResolver clientIpResolver,
             @Value("${identity.otp.expose-code:false}") boolean includeOtpDebugCode
     ) {
         this.requestOtpUseCase = Objects.requireNonNull(
@@ -45,13 +48,17 @@ public final class AuthController {
                 authenticateUseCase, "authenticateUseCase must not be null");
         this.refreshTokenUseCase = Objects.requireNonNull(
                 refreshTokenUseCase, "refreshTokenUseCase must not be null");
+        this.clientIpResolver = Objects.requireNonNull(
+                clientIpResolver, "clientIpResolver must not be null");
         this.includeOtpDebugCode = includeOtpDebugCode;
     }
 
     @PostMapping("/otp/request")
     public ResponseEntity<OtpResponse> requestOtp(
-            @RequestBody OtpRequest request) {
-        RequestOtpCommand command = AuthMapper.toCommand(request);
+            @RequestBody OtpRequest request,
+            HttpServletRequest httpRequest) {
+        RequestOtpCommand command = AuthMapper.toCommand(
+                request, clientIpResolver.resolve(httpRequest));
         RequestOtpResult result = requestOtpUseCase.execute(command);
         return ResponseEntity.ok(AuthMapper.toResponse(result, includeOtpDebugCode));
     }

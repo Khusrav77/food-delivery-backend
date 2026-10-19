@@ -15,9 +15,9 @@ public final class AuthMapper {
 
     private AuthMapper() {}
 
-    public static RequestOtpCommand toCommand(OtpRequest request) {
+    public static RequestOtpCommand toCommand(OtpRequest request, String clientIp) {
         Objects.requireNonNull(request, "request must not be null");
-        return new RequestOtpCommand(new PhoneNumber(request.phone()));
+        return new RequestOtpCommand(new PhoneNumber(request.phone()), clientIp);
     }
 
     public static OtpResponse toResponse(RequestOtpResult result, boolean includeDebugCode) {

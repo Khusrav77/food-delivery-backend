@@ -5,7 +5,7 @@ import java.util.Objects;
 
 public final class OtpCode {
 
-    private static final int MAX_ATTEMPTS = 5;
+    public static final int MAX_VERIFICATION_ATTEMPTS = 5;
     private final String value;
     private final Instant expiresAt;
     private int attempts;
@@ -22,7 +22,7 @@ public final class OtpCode {
         return new OtpCode(value, expiresAt);
     }
 
-    public boolean verify(String candidate, Instant now) {
+    public synchronized boolean verify(String candidate, Instant now) {
         Objects.requireNonNull(candidate, "candidate must not be null");
         Objects.requireNonNull(now, "now must not be null");
 
@@ -30,7 +30,7 @@ public final class OtpCode {
 
         if (!now.isBefore(expiresAt)) {return false;}
 
-        if (attempts >= MAX_ATTEMPTS) {return false;}
+        if (attempts >= MAX_VERIFICATION_ATTEMPTS) {return false;}
 
         attempts++;
 
@@ -50,6 +50,7 @@ public final class OtpCode {
     public boolean isUsed() {return used;}
     public int attempts() {return attempts;}
     public Instant expiresAt() {return expiresAt;}
+    public String value() {return value;}
 
     private static void validateValue(String value) {
         if (value == null || !value.matches("\\d{6}")) {

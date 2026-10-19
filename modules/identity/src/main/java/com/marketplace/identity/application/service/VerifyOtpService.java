@@ -9,10 +9,8 @@ import com.marketplace.identity.application.port.out.OtpStoragePort;
 
 import com.marketplace.identity.application.port.out.UserAccountPort;
 import com.marketplace.identity.application.result.VerifyOtpResult;
-import com.marketplace.identity.domain.model.OtpCode;
 import com.marketplace.identity.domain.model.UserAccount;
 
-import java.time.Instant;
 import java.util.Objects;
 
 public final class VerifyOtpService implements VerifyOtpUseCase {
@@ -45,13 +43,7 @@ public final class VerifyOtpService implements VerifyOtpUseCase {
     public VerifyOtpResult execute(VerifyOtpCommand command) {
 
         Objects.requireNonNull(command, "command must not be null");
-        OtpCode otpCode = otpStoragePort.findByPhone(command.phone())
-                .orElseThrow(() -> new IllegalArgumentException("OTP code not found"));
-
-        Instant now = clockPort.now();
-        boolean verified = otpCode.verify(command.code(), now);
-
-        if (!verified) {
+        if (!otpStoragePort.verify(command.phone(), command.code(), clockPort.now())) {
             throw new IllegalArgumentException("Invalid OTP code");
         }
 

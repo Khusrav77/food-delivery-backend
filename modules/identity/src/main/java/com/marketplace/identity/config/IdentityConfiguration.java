@@ -8,6 +8,7 @@ import com.marketplace.identity.application.port.in.VerifyOtpUseCase;
 import com.marketplace.identity.application.port.out.ClockPort;
 import com.marketplace.identity.application.port.out.EventPublisherPort;
 import com.marketplace.identity.application.port.out.OtpGeneratorPort;
+import com.marketplace.identity.application.port.out.OtpRequestRateLimiterPort;
 import com.marketplace.identity.application.port.out.OtpStoragePort;
 import com.marketplace.identity.application.port.out.TokenProviderPort;
 import com.marketplace.identity.application.port.out.TokenValidatorPort;
@@ -18,11 +19,14 @@ import com.marketplace.identity.application.service.RefreshTokenService;
 import com.marketplace.identity.application.service.RequestOtpService;
 import com.marketplace.identity.application.service.VerifyOtpService;
 import com.marketplace.identity.infrastructure.adapter.transaction.SpringTransactionalCreateUserAccountUseCase;
+import com.marketplace.identity.infrastructure.adapter.otp.OtpRateLimitProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
+@EnableConfigurationProperties(OtpRateLimitProperties.class)
 public class IdentityConfiguration {
 
     @Bean
@@ -48,10 +52,12 @@ public class IdentityConfiguration {
     @Bean
     public RequestOtpUseCase requestOtpUseCase(
             OtpStoragePort otpStoragePort,
+            OtpRequestRateLimiterPort otpRequestRateLimiterPort,
             OtpGeneratorPort otpGeneratorPort,
             ClockPort clockPort) {
         return new RequestOtpService(
                 otpStoragePort,
+                otpRequestRateLimiterPort,
                 otpGeneratorPort,
                 clockPort);
     }
