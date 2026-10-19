@@ -2,6 +2,7 @@ package com.marketplace.identity.application.service;
 
 import com.marketplace.identity.application.command.CreateUserAccountCommand;
 import com.marketplace.identity.application.command.VerifyOtpCommand;
+import com.marketplace.identity.application.exception.AuthenticationFailedException;
 import com.marketplace.identity.application.port.in.CreateUserAccountUseCase;
 import com.marketplace.identity.application.port.in.VerifyOtpUseCase;
 import com.marketplace.identity.application.port.out.ClockPort;
@@ -44,7 +45,7 @@ public final class VerifyOtpService implements VerifyOtpUseCase {
 
         Objects.requireNonNull(command, "command must not be null");
         if (!otpStoragePort.verify(command.phone(), command.code(), clockPort.now())) {
-            throw new IllegalArgumentException("Invalid OTP code");
+            throw new AuthenticationFailedException();
         }
 
         UserAccount account = userAccountPort

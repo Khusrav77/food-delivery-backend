@@ -1,7 +1,9 @@
 package com.marketplace.identity.infrastructure.security;
 
+import com.marketplace.identity.api.exception.ProblemDetailResponses;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -36,6 +38,23 @@ public class SecurityConfiguration {
 
                         .anyRequest()
                         .authenticated())
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint((request, response, exception) -> {
+                            response.setHeader("WWW-Authenticate", "Bearer");
+                            ProblemDetailResponses.write(
+                                    request,
+                                    response,
+                                    HttpStatus.UNAUTHORIZED,
+                                    "Unauthorized",
+                                    "Authentication required");
+                        })
+                        .accessDeniedHandler((request, response, exception) ->
+                                ProblemDetailResponses.write(
+                                        request,
+                                        response,
+                                        HttpStatus.FORBIDDEN,
+                                        "Forbidden",
+                                        "Access is denied")))
 
                 .addFilterBefore(
                         jwtAuthenticationFilter,

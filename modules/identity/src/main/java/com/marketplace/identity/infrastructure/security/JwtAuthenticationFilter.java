@@ -1,5 +1,6 @@
 package com.marketplace.identity.infrastructure.security;
 
+import com.marketplace.identity.api.exception.ProblemDetailResponses;
 import com.marketplace.identity.application.port.out.TokenValidatorPort;
 import com.marketplace.identity.application.result.ValidatedToken;
 import com.marketplace.identity.domain.model.Role;
@@ -11,6 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -49,7 +51,13 @@ public final class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (token.isBlank()) {
             SecurityContextHolder.clearContext();
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setHeader("WWW-Authenticate", "Bearer");
+            ProblemDetailResponses.write(
+                    request,
+                    response,
+                    HttpStatus.UNAUTHORIZED,
+                    "Unauthorized",
+                    "Authentication required");
             return;
         }
 
@@ -70,7 +78,13 @@ public final class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         } catch (IllegalArgumentException exception) {
             SecurityContextHolder.clearContext();
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setHeader("WWW-Authenticate", "Bearer");
+            ProblemDetailResponses.write(
+                    request,
+                    response,
+                    HttpStatus.UNAUTHORIZED,
+                    "Unauthorized",
+                    "Authentication required");
         }
     }
 

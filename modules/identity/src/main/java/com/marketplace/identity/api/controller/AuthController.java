@@ -23,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 import java.util.Objects;
 import java.util.Set;
@@ -67,7 +68,7 @@ public final class AuthController {
 
     @PostMapping("/otp/request")
     public ResponseEntity<OtpResponse> requestOtp(
-            @RequestBody OtpRequest request,
+            @Valid @RequestBody OtpRequest request,
             HttpServletRequest httpRequest) {
         RequestOtpCommand command = AuthMapper.toCommand(
                 request, clientIpResolver.resolve(httpRequest));
@@ -76,7 +77,7 @@ public final class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         AuthenticateCommand command = AuthMapper.toCommand(request);
         AuthenticationResult result = authenticateUseCase.execute(command);
         return ResponseEntity.ok(AuthMapper.toResponse(result));
@@ -84,7 +85,7 @@ public final class AuthController {
 
     @PostMapping("/refresh")
     public ResponseEntity<RefreshTokenResponse> refresh(
-            @RequestBody RefreshTokenRequest request) {
+            @Valid @RequestBody RefreshTokenRequest request) {
         RefreshTokenCommand command = AuthMapper.toCommand(request);
         RefreshTokenResult result = refreshTokenUseCase.execute(command);
         return ResponseEntity.ok(AuthMapper.toResponse(result));
@@ -92,7 +93,7 @@ public final class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(
-            @RequestBody LogoutRequest request,
+            @Valid @RequestBody LogoutRequest request,
             Authentication authentication) {
         UserId userId = (UserId) authentication.getPrincipal();
         logoutCurrentSessionUseCase.execute(

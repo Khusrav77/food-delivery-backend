@@ -1,6 +1,7 @@
 package com.marketplace.identity.application.service;
 
 import com.marketplace.identity.application.command.RefreshTokenCommand;
+import com.marketplace.identity.application.exception.AuthenticationFailedException;
 import com.marketplace.identity.application.port.in.RefreshTokenUseCase;
 import com.marketplace.identity.application.port.out.TokenProviderPort;
 import com.marketplace.identity.application.port.out.TokenValidatorPort;
@@ -45,16 +46,20 @@ public final class RefreshTokenService implements RefreshTokenUseCase {
     public RefreshTokenResult execute(RefreshTokenCommand command) {
         Objects.requireNonNull(command, "command must not be null");
 
-        ValidatedToken validatedToken =
-                tokenValidatorPort.validateRefreshToken(command.refreshToken());
+        ValidatedToken validatedToken;
+        try {
+            validatedToken = tokenValidatorPort.validateRefreshToken(command.refreshToken());
+        } catch (IllegalArgumentException exception) {
+            throw new AuthenticationFailedException();
+        }
 
         UserAccount account = userAccountPort
                 .findById(validatedToken.userId())
                 .orElseThrow(() ->
-                        new IllegalArgumentException("User account not found"));
+                        new AuthenticationFailedException());
 
         if (!account.isActive()) {
-            throw new IllegalStateException("User account is not active");
+            throw new AuthenticationFailedException();
         }
 
         AccessToken accessToken = tokenProviderPort.generateAccessToken(account);
@@ -68,7 +73,7 @@ public final class RefreshTokenService implements RefreshTokenUseCase {
                 now);
 
         if (rotation != RefreshSessionPort.RotationResult.ROTATED) {
-            throw new IllegalArgumentException("Invalid refresh token");
+            throw new AuthenticationFailedException();
         }
 
         return new RefreshTokenResult(accessToken, refreshToken);

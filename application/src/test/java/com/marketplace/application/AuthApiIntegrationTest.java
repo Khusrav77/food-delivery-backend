@@ -95,7 +95,9 @@ class AuthApiIntegrationTest {
         String refreshToken = JsonPath.read(loginJson, "$.refreshToken");
 
         mockMvc.perform(get("/api/v1/auth/me"))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.status").value(401))
+                .andExpect(jsonPath("$.title").value("Unauthorized"));
         mockMvc.perform(get("/api/v1/auth/me")
                         .header("Authorization", "Bearer invalid-token"))
                 .andExpect(status().isUnauthorized());

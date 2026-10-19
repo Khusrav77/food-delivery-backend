@@ -27,7 +27,8 @@ public final class JwtTokenProviderAdapter implements TokenProviderPort {
     public JwtTokenProviderAdapter(JwtProperties properties) {
         this.properties = Objects.requireNonNull(
                 properties, "properties must not be null");
-        this.signingKey = JwtKeyProvider.createSigningKey(properties.secretKey());
+        this.signingKey = JwtKeyProvider.createSigningKey(
+                properties.keys().get(properties.activeKeyId()));
     }
 
     @Override
@@ -55,6 +56,9 @@ public final class JwtTokenProviderAdapter implements TokenProviderPort {
         Instant expiresAt = issuedAt.plusSeconds(expiresInSeconds);
 
         return Jwts.builder()
+                .header()
+                .keyId(properties.activeKeyId())
+                .and()
                 .id(UUID.randomUUID().toString())
                 .subject(account.id().value().toString())
                 .claim(TOKEN_TYPE_CLAIM, tokenType)

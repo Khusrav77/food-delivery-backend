@@ -26,3 +26,28 @@ services:
     restart: always
     ports:
       - "127.0.0.1:${REDIS_HOST_PORT:-6379}:6379"
+
+  application:
+    image: ${APPLICATION_IMAGE:-marketplace:latest}
+    profiles: [production]
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: production
+      DATABASE_URL: jdbc:postgresql://postgres:5432/marketplace
+      DATABASE_USERNAME: marketplace
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set}
+      REDIS_URL: redis://redis:6379
+    ports:
+      - "127.0.0.1:${APPLICATION_HOST_PORT:-8080}:8080"
+    secrets:
+      - source: jwt-keyring
+        target: jwt-keyring.properties
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+secrets:
+  jwt-keyring:
+    file: ${JWT_KEYRING_FILE:-./secrets/jwt-keyring.properties}

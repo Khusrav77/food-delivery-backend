@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.time.Duration;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,7 +30,8 @@ class JwtTokenAdaptersTest {
     @BeforeEach
     void setUp() {
         JwtProperties properties = new JwtProperties(
-                SECRET, Duration.ofMinutes(15), Duration.ofDays(30));
+                "test-key", Map.of("test-key", SECRET),
+                Duration.ofMinutes(15), Duration.ofDays(30));
         tokenProvider = new JwtTokenProviderAdapter(properties);
         tokenValidator = new JwtTokenValidatorAdapter(properties);
         account = UserAccount.create(USER_ID, new PhoneNumber("+12025550123"));
@@ -76,7 +78,8 @@ class JwtTokenAdaptersTest {
     @Test
     void shouldRejectTokenSignedWithAnotherKey() {
         JwtTokenValidatorAdapter validatorWithOtherKey = new JwtTokenValidatorAdapter(
-                new JwtProperties("another-secret-key-with-more-than-thirty-two-bytes",
+                new JwtProperties("other-key",
+                        Map.of("other-key", "another-secret-key-with-more-than-thirty-two-bytes"),
                         Duration.ofMinutes(15), Duration.ofDays(30)));
         var token = tokenProvider.generateAccessToken(account);
 

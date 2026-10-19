@@ -5,8 +5,10 @@ import com.marketplace.identity.application.result.ValidatedToken;
 import com.marketplace.identity.domain.model.Role;
 import com.marketplace.identity.domain.model.UserId;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Header;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.JwsHeader;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -47,8 +49,7 @@ public final class JwtTokenValidatorAdapter implements TokenValidatorPort {
 
         try {
             Claims claims = Jwts.parser()
-                    .verifyWith(
-                            JwtKeyProvider.createSigningKey(properties.secretKey()))
+                    .keyLocator(this::locateVerificationKey)
                     .build()
                     .parseSignedClaims(token)
                     .getPayload();
@@ -63,6 +64,23 @@ public final class JwtTokenValidatorAdapter implements TokenValidatorPort {
         } catch (JwtException | IllegalArgumentException e) {
             throw new IllegalArgumentException("Invalid JWT token", e);
         }
+    }
+
+    private java.security.Key locateVerificationKey(Header header) {
+        if (!(header instanceof JwsHeader jwsHeader)) {
+            throw new IllegalArgumentException("JWT must be signed");
+        }
+
+        String keyId = jwsHeader.getKeyId();
+        if (keyId == null || keyId.isBlank()) {
+            throw new IllegalArgumentException("JWT key id must not be blank");
+        }
+
+        String secret = properties.keys().get(keyId);
+        if (secret == null) {
+            throw new IllegalArgumentException("Unknown JWT key id");
+        }
+        return JwtKeyProvider.createSigningKey(secret);
     }
 
     private void validateTokenType(Claims claims, String expectedTokenType) {

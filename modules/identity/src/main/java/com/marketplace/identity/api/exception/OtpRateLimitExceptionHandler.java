@@ -1,6 +1,7 @@
 package com.marketplace.identity.api.exception;
 
 import com.marketplace.identity.application.exception.OtpRequestRateLimitExceededException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,10 +15,13 @@ public final class OtpRateLimitExceptionHandler {
 
     @ExceptionHandler(OtpRequestRateLimitExceededException.class)
     public ResponseEntity<ProblemDetail> handleRateLimit(
-            OtpRequestRateLimitExceededException exception) {
-        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+            OtpRequestRateLimitExceededException exception,
+            HttpServletRequest request) {
+        ProblemDetail problem = ProblemDetailResponses.forRequest(
                 HttpStatus.TOO_MANY_REQUESTS,
-                "OTP request rate limit exceeded");
+                "Too Many Requests",
+                "OTP request rate limit exceeded",
+                request);
         problem.setTitle("Too Many Requests");
         problem.setProperty("retryAfterSeconds", exception.retryAfterSeconds());
 
