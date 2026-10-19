@@ -1,5 +1,6 @@
-package com.marketplace.identity.infrastructure.adapter.persistence;
+package com.marketplace.identity.infrastructure.adapter.persistence.repository;
 
+import com.marketplace.identity.infrastructure.adapter.persistence.entity.UserAccountEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

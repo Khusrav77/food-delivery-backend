@@ -1,18 +1,26 @@
+
 spring:
   application:
     name: my-marketplace
-  datasource:
-    url: ${DATABASE_URL}
-    username: ${DATABASE_USERNAME}
-    password: ${DATABASE_PASSWORD}
+
   jpa:
+    open-in-view: false
     hibernate:
       ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+
   liquibase:
+    enabled: true
     change-log: classpath:db/changelog/changelog-master.yaml
 
 security:
   jwt:
-    secret-key: change-me-change-me-change-me-change-me
+    secret-key: ${JWT_SECRET_KEY:change-me-change-me-change-me-change-me}
     access-token-ttl: 15m
     refresh-token-ttl: 30d
+
+identity:
+  otp:
+    expose-code: false

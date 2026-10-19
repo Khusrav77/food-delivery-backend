@@ -1,9 +1,12 @@
-package com.marketplace.identity.infrastructure.adapter.persistence;
+package com.marketplace.identity.infrastructure.adapter.persistence.adapter;
 
 import com.marketplace.identity.application.port.out.UserAccountPort;
 import com.marketplace.identity.domain.model.PhoneNumber;
 import com.marketplace.identity.domain.model.UserAccount;
 import com.marketplace.identity.domain.model.UserId;
+import com.marketplace.identity.infrastructure.adapter.persistence.entity.UserAccountEntity;
+import com.marketplace.identity.infrastructure.adapter.persistence.mapper.UserAccountEntityMapper;
+import com.marketplace.identity.infrastructure.adapter.persistence.repository.UserAccountJpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
