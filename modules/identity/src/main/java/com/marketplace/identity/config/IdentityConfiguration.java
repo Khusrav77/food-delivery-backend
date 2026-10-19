@@ -2,6 +2,8 @@ package com.marketplace.identity.config;
 
 import com.marketplace.identity.application.port.in.AuthenticateUseCase;
 import com.marketplace.identity.application.port.in.CreateUserAccountUseCase;
+import com.marketplace.identity.application.port.in.LogoutAllSessionsUseCase;
+import com.marketplace.identity.application.port.in.LogoutCurrentSessionUseCase;
 import com.marketplace.identity.application.port.in.RefreshTokenUseCase;
 import com.marketplace.identity.application.port.in.RequestOtpUseCase;
 import com.marketplace.identity.application.port.in.VerifyOtpUseCase;
@@ -13,8 +15,11 @@ import com.marketplace.identity.application.port.out.OtpStoragePort;
 import com.marketplace.identity.application.port.out.TokenProviderPort;
 import com.marketplace.identity.application.port.out.TokenValidatorPort;
 import com.marketplace.identity.application.port.out.UserAccountPort;
+import com.marketplace.identity.application.port.out.RefreshSessionPort;
 import com.marketplace.identity.application.service.AuthenticationService;
 import com.marketplace.identity.application.service.CreateUserAccountService;
+import com.marketplace.identity.application.service.LogoutAllSessionsService;
+import com.marketplace.identity.application.service.LogoutCurrentSessionService;
 import com.marketplace.identity.application.service.RefreshTokenService;
 import com.marketplace.identity.application.service.RequestOtpService;
 import com.marketplace.identity.application.service.VerifyOtpService;
@@ -78,20 +83,42 @@ public class IdentityConfiguration {
     @Bean
     public AuthenticateUseCase authenticateUseCase(
             VerifyOtpUseCase verifyOtpUseCase,
-            TokenProviderPort tokenProviderPort) {
+            TokenProviderPort tokenProviderPort,
+            RefreshSessionPort refreshSessionPort,
+            ClockPort clockPort) {
         return new AuthenticationService(
                 verifyOtpUseCase,
-                tokenProviderPort);
+                tokenProviderPort,
+                refreshSessionPort,
+                clockPort);
     }
 
     @Bean
     public RefreshTokenUseCase refreshTokenUseCase(
             TokenValidatorPort tokenValidatorPort,
             UserAccountPort userAccountPort,
-            TokenProviderPort tokenProviderPort) {
+            TokenProviderPort tokenProviderPort,
+            RefreshSessionPort refreshSessionPort,
+            ClockPort clockPort) {
         return new RefreshTokenService(
                 tokenValidatorPort,
                 userAccountPort,
-                tokenProviderPort);
+                tokenProviderPort,
+                refreshSessionPort,
+                clockPort);
+    }
+
+    @Bean
+    public LogoutCurrentSessionUseCase logoutCurrentSessionUseCase(
+            RefreshSessionPort refreshSessionPort,
+            ClockPort clockPort) {
+        return new LogoutCurrentSessionService(refreshSessionPort, clockPort);
+    }
+
+    @Bean
+    public LogoutAllSessionsUseCase logoutAllSessionsUseCase(
+            RefreshSessionPort refreshSessionPort,
+            ClockPort clockPort) {
+        return new LogoutAllSessionsService(refreshSessionPort, clockPort);
     }
 }

@@ -1,0 +1,78 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026-10-19-002-create-refresh-sessions
+      author: shh
+      changes:
+        - createTable:
+            tableName: identity_refresh_sessions
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_identity_refresh_sessions
+                    nullable: false
+              - column:
+                  name: user_account_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: current_token_hash
+                  type: VARCHAR(64)
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: uk_identity_refresh_sessions_current_hash
+              - column:
+                  name: expires_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: revoked_at
+                  type: TIMESTAMP WITH TIME ZONE
+        - addForeignKeyConstraint:
+            baseTableName: identity_refresh_sessions
+            baseColumnNames: user_account_id
+            referencedTableName: identity_user_accounts
+            referencedColumnNames: id
+            constraintName: fk_identity_refresh_sessions_account
+            onDelete: CASCADE
+        - createIndex:
+            tableName: identity_refresh_sessions
+            indexName: ix_identity_refresh_sessions_account
+            columns:
+              - column:
+                  name: user_account_id
+        - createTable:
+            tableName: identity_refresh_token_history
+            columns:
+              - column:
+                  name: token_hash
+                  type: VARCHAR(64)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_identity_refresh_token_history
+                    nullable: false
+              - column:
+                  name: session_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: consumed_at
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: expires_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: identity_refresh_token_history
+            baseColumnNames: session_id
+            referencedTableName: identity_refresh_sessions
+            referencedColumnNames: id
+            constraintName: fk_identity_refresh_history_session
+            onDelete: CASCADE

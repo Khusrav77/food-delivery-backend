@@ -48,6 +48,9 @@ public final class AuthMapper {
     public static RefreshTokenResponse toResponse(
             RefreshTokenResult result) {
         return new RefreshTokenResponse(
-                result.accessToken().value(), result.accessToken().expiresInSeconds());
+                result.accessToken().value(),
+                result.accessToken().expiresInSeconds(),
+                result.refreshToken().value(),
+                result.refreshToken().expiresInSeconds());
     }
 }

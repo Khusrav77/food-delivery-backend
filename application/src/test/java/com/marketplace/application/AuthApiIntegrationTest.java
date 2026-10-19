@@ -4,8 +4,15 @@ import com.jayway.jsonpath.JsonPath;
 import com.marketplace.identity.application.port.out.OtpRequestRateLimitDecision;
 import com.marketplace.identity.application.port.out.OtpRequestRateLimiterPort;
 import com.marketplace.identity.application.port.out.OtpStoragePort;
+import com.marketplace.identity.application.port.out.RefreshSessionPort;
+import com.marketplace.identity.application.port.in.CreateUserAccountUseCase;
+import com.marketplace.identity.application.command.CreateUserAccountCommand;
+import com.marketplace.identity.application.port.out.TokenProviderPort;
+import com.marketplace.identity.application.result.AccessToken;
 import com.marketplace.identity.domain.model.OtpCode;
 import com.marketplace.identity.domain.model.PhoneNumber;
+import com.marketplace.identity.domain.model.UserId;
+import com.marketplace.identity.domain.model.UserAccount;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +26,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -32,6 +40,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadLocalRandom;
 import java.time.Instant;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Future;
+import java.util.concurrent.ExecutorService;
+import java.util.UUID;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -50,9 +62,18 @@ class AuthApiIntegrationTest {
     @Autowired
     private StringRedisTemplate redisTemplate;
 
+    @Autowired
+    private RefreshSessionPort refreshSessionPort;
+
+    @Autowired
+    private CreateUserAccountUseCase createUserAccountUseCase;
+
+    @Autowired
+    private TokenProviderPort tokenProviderPort;
+
     @Test
     void shouldCompleteOtpLoginRefreshAndProtectedRequestFlow() throws Exception {
-        String phone = "+12025550123";
+        String phone = randomPhone().value();
         MvcResult otpResponse = mockMvc.perform(post("/api/v1/auth/otp/request")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"phone\":\"" + phone + "\"}"))
@@ -92,9 +113,13 @@ class AuthApiIntegrationTest {
                         .content("{\"refreshToken\":\"" + refreshToken + "\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accessToken").isNotEmpty())
+                .andExpect(jsonPath("$.refreshToken").isNotEmpty())
                 .andReturn();
         String refreshedAccessToken = JsonPath.read(
                 refreshResponse.getResponse().getContentAsString(), "$.accessToken");
+        String refreshedRefreshToken = JsonPath.read(
+                refreshResponse.getResponse().getContentAsString(), "$.refreshToken");
+        assertNotEquals(refreshToken, refreshedRefreshToken);
 
         MvcResult refreshedSessionResponse = mockMvc.perform(get("/api/v1/auth/me")
                         .header("Authorization", "Bearer " + refreshedAccessToken))
@@ -102,6 +127,141 @@ class AuthApiIntegrationTest {
                 .andReturn();
         assertEquals(userId, JsonPath.read(
                 refreshedSessionResponse.getResponse().getContentAsString(), "$.userId"));
+
+        MvcResult secondRefreshResponse = mockMvc.perform(post("/api/v1/auth/refresh")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"refreshToken\":\"" + refreshedRefreshToken + "\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.accessToken").isNotEmpty())
+                .andExpect(jsonPath("$.refreshToken").isNotEmpty())
+                .andReturn();
+        assertNotNull(JsonPath.read(
+                secondRefreshResponse.getResponse().getContentAsString(), "$.refreshToken"));
+    }
+
+    @Test
+    void shouldRevokeOnlyTheSessionWhoseRefreshTokenWasReused() {
+        UserId userId = createTestAccount().id();
+        Instant now = Instant.now();
+        Instant expiresAt = now.plusSeconds(30L * 24 * 60 * 60);
+        String sessionOneToken = "session-one-" + UUID.randomUUID();
+        String sessionTwoToken = "session-two-" + UUID.randomUUID();
+        refreshSessionPort.start(userId, sessionOneToken, expiresAt, now);
+        refreshSessionPort.start(userId, sessionTwoToken, expiresAt, now);
+
+        assertEquals(RefreshSessionPort.RotationResult.ROTATED,
+                refreshSessionPort.rotate(
+                        userId, sessionOneToken, "session-one-next-" + UUID.randomUUID(), expiresAt, now));
+        assertEquals(RefreshSessionPort.RotationResult.REUSED,
+                refreshSessionPort.rotate(
+                        userId, sessionOneToken, "session-one-replay-" + UUID.randomUUID(), expiresAt, now));
+        assertEquals(RefreshSessionPort.RotationResult.ROTATED,
+                refreshSessionPort.rotate(
+                        userId, sessionTwoToken, "session-two-next-" + UUID.randomUUID(), expiresAt, now));
+    }
+
+    @Test
+    void shouldNotCreateTwoActiveBranchesForConcurrentRefreshes() throws Exception {
+        UserId userId = createTestAccount().id();
+        Instant now = Instant.now();
+        Instant expiresAt = now.plusSeconds(30L * 24 * 60 * 60);
+        String presentedToken = "concurrent-session-" + UUID.randomUUID();
+        refreshSessionPort.start(userId, presentedToken, expiresAt, now);
+
+        CountDownLatch ready = new CountDownLatch(2);
+        CountDownLatch start = new CountDownLatch(1);
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+        try {
+            Future<RefreshSessionPort.RotationResult> first = executor.submit(() -> {
+                ready.countDown();
+                start.await();
+                return refreshSessionPort.rotate(
+                        userId, presentedToken, "concurrent-branch-one-" + UUID.randomUUID(), expiresAt, now);
+            });
+            Future<RefreshSessionPort.RotationResult> second = executor.submit(() -> {
+                ready.countDown();
+                start.await();
+                return refreshSessionPort.rotate(
+                        userId, presentedToken, "concurrent-branch-two-" + UUID.randomUUID(), expiresAt, now);
+            });
+
+            ready.await();
+            start.countDown();
+            List<RefreshSessionPort.RotationResult> results = List.of(
+                    first.get(), second.get());
+            assertEquals(1, results.stream()
+                    .filter(result -> result == RefreshSessionPort.RotationResult.ROTATED)
+                    .count());
+            assertEquals(1, results.stream()
+                    .filter(result -> result == RefreshSessionPort.RotationResult.REUSED)
+                    .count());
+        } finally {
+            executor.shutdownNow();
+        }
+    }
+
+    @Test
+    void shouldLogoutOnlyTheCurrentRefreshSession() throws Exception {
+        UserAccount account = createTestAccount();
+        Instant now = Instant.now();
+        Instant expiresAt = now.plusSeconds(30L * 24 * 60 * 60);
+        String currentDeviceToken = "logout-current-" + UUID.randomUUID();
+        String otherDeviceToken = "logout-other-" + UUID.randomUUID();
+        refreshSessionPort.start(account.id(), currentDeviceToken, expiresAt, now);
+        refreshSessionPort.start(account.id(), otherDeviceToken, expiresAt, now);
+        AccessToken accessToken = tokenProviderPort.generateAccessToken(account);
+
+        mockMvc.perform(post("/api/v1/auth/logout")
+                        .header("Authorization", "Bearer " + accessToken.value())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"refreshToken\":\"" + currentDeviceToken + "\"}"))
+                .andExpect(status().isNoContent());
+
+        assertEquals(RefreshSessionPort.RotationResult.INACTIVE,
+                refreshSessionPort.rotate(
+                        account.id(), currentDeviceToken,
+                        "logout-current-next-" + UUID.randomUUID(), expiresAt, now));
+        assertEquals(RefreshSessionPort.RotationResult.ROTATED,
+                refreshSessionPort.rotate(
+                        account.id(), otherDeviceToken,
+                        "logout-other-next-" + UUID.randomUUID(), expiresAt, now));
+    }
+
+    @Test
+    void shouldLogoutAllRefreshSessionsForAuthenticatedUser() throws Exception {
+        UserAccount account = createTestAccount();
+        UserAccount otherAccount = createTestAccount();
+        Instant now = Instant.now();
+        Instant expiresAt = now.plusSeconds(30L * 24 * 60 * 60);
+        String firstDeviceToken = "logout-all-one-" + UUID.randomUUID();
+        String secondDeviceToken = "logout-all-two-" + UUID.randomUUID();
+        String otherUserToken = "logout-all-other-user-" + UUID.randomUUID();
+        refreshSessionPort.start(account.id(), firstDeviceToken, expiresAt, now);
+        refreshSessionPort.start(account.id(), secondDeviceToken, expiresAt, now);
+        refreshSessionPort.start(otherAccount.id(), otherUserToken, expiresAt, now);
+        AccessToken accessToken = tokenProviderPort.generateAccessToken(account);
+
+        mockMvc.perform(post("/api/v1/auth/logout-all")
+                        .header("Authorization", "Bearer " + accessToken.value()))
+                .andExpect(status().isNoContent());
+
+        assertEquals(RefreshSessionPort.RotationResult.INACTIVE,
+                refreshSessionPort.rotate(
+                        account.id(), firstDeviceToken,
+                        "logout-all-one-next-" + UUID.randomUUID(), expiresAt, now));
+        assertEquals(RefreshSessionPort.RotationResult.INACTIVE,
+                refreshSessionPort.rotate(
+                        account.id(), secondDeviceToken,
+                        "logout-all-two-next-" + UUID.randomUUID(), expiresAt, now));
+        assertEquals(RefreshSessionPort.RotationResult.ROTATED,
+                refreshSessionPort.rotate(
+                        otherAccount.id(), otherUserToken,
+                        "logout-all-other-user-next-" + UUID.randomUUID(), expiresAt, now));
+    }
+
+    private UserAccount createTestAccount() {
+        return createUserAccountUseCase.execute(
+                new CreateUserAccountCommand(randomPhone()));
     }
 
     @Test

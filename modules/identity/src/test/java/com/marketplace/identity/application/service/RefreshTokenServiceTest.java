@@ -4,8 +4,11 @@ import com.marketplace.identity.application.command.RefreshTokenCommand;
 import com.marketplace.identity.application.port.out.TokenProviderPort;
 import com.marketplace.identity.application.port.out.TokenValidatorPort;
 import com.marketplace.identity.application.port.out.UserAccountPort;
+import com.marketplace.identity.application.port.out.RefreshSessionPort;
+import com.marketplace.identity.application.port.out.ClockPort;
 import com.marketplace.identity.application.result.AccessToken;
 import com.marketplace.identity.application.result.RefreshToken;
+import com.marketplace.identity.application.result.RefreshTokenResult;
 import com.marketplace.identity.application.result.ValidatedToken;
 import com.marketplace.identity.domain.model.PhoneNumber;
 import com.marketplace.identity.domain.model.UserAccount;
@@ -15,6 +18,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.time.Instant;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -28,6 +32,7 @@ class RefreshTokenServiceTest {
     private StubTokenValidator tokenValidator;
     private StubTokenProvider tokenProvider;
     private StubUserAccountPort userAccountPort;
+    private StubRefreshSessionPort refreshSessionPort;
     private RefreshTokenService service;
 
     @BeforeEach
@@ -35,15 +40,31 @@ class RefreshTokenServiceTest {
         tokenValidator = new StubTokenValidator(new ValidatedToken(USER_ID, account.roles()));
         tokenProvider = new StubTokenProvider();
         userAccountPort = new StubUserAccountPort(account);
-        service = new RefreshTokenService(tokenValidator, userAccountPort, tokenProvider);
+        refreshSessionPort = new StubRefreshSessionPort();
+        ClockPort clock = () -> Instant.parse("2026-10-19T12:00:00Z");
+        service = new RefreshTokenService(
+                tokenValidator, userAccountPort, tokenProvider, refreshSessionPort, clock);
     }
 
     @Test
-    void shouldIssueNewAccessTokenForValidRefreshToken() {
-        var result = service.execute(new RefreshTokenCommand("refresh-token"));
+    void shouldRotateRefreshTokenAndReturnNewTokenPair() {
+        RefreshTokenResult result = service.execute(new RefreshTokenCommand("refresh-token"));
 
         assertEquals("new-access-token", result.accessToken().value());
+        assertEquals("new-refresh-token", result.refreshToken().value());
         assertEquals("refresh-token", tokenValidator.receivedToken);
+        assertEquals("refresh-token", refreshSessionPort.presentedToken);
+        assertEquals("new-refresh-token", refreshSessionPort.replacementToken);
+        assertEquals(RefreshSessionPort.RotationResult.ROTATED, refreshSessionPort.result);
+        assertEquals(Instant.parse("2026-10-19T12:30:00Z"), refreshSessionPort.expiresAt);
+    }
+
+    @Test
+    void shouldRejectReusedRefreshToken() {
+        refreshSessionPort.result = RefreshSessionPort.RotationResult.REUSED;
+
+        assertThrows(IllegalArgumentException.class,
+                () -> service.execute(new RefreshTokenCommand("old-refresh-token")));
     }
 
     @Test
@@ -95,6 +116,41 @@ class RefreshTokenServiceTest {
 
         @Override
         public RefreshToken generateRefreshToken(UserAccount userAccount) {
+            return new RefreshToken("new-refresh-token", 1800);
+        }
+    }
+
+    private static final class StubRefreshSessionPort implements RefreshSessionPort {
+        private RotationResult result = RotationResult.ROTATED;
+        private String presentedToken;
+        private String replacementToken;
+        private Instant expiresAt;
+
+        @Override
+        public void start(UserId userId, String refreshToken, Instant expiresAt, Instant now) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public RotationResult rotate(
+                UserId userId,
+                String presentedToken,
+                String replacementToken,
+                Instant replacementExpiresAt,
+                Instant now) {
+            this.presentedToken = presentedToken;
+            this.replacementToken = replacementToken;
+            this.expiresAt = replacementExpiresAt;
+            return result;
+        }
+
+        @Override
+        public void revokeCurrent(UserId userId, String refreshToken, Instant now) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void revokeAll(UserId userId, Instant now) {
             throw new UnsupportedOperationException();
         }
     }

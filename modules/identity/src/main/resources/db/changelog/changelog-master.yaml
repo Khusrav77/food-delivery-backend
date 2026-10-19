@@ -1,3 +1,5 @@
 databaseChangeLog:
   - include:
       file: db/changelog/2026-10-19-001-create-user-accounts.yaml
+  - include:
+      file: db/changelog/2026-10-19-002-create-refresh-sessions.yaml

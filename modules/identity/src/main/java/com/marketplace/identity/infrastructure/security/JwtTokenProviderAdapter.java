@@ -12,6 +12,7 @@ import javax.crypto.SecretKey;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Objects;
+import java.util.UUID;
 
 @Component
 public final class JwtTokenProviderAdapter implements TokenProviderPort {
@@ -54,6 +55,7 @@ public final class JwtTokenProviderAdapter implements TokenProviderPort {
         Instant expiresAt = issuedAt.plusSeconds(expiresInSeconds);
 
         return Jwts.builder()
+                .id(UUID.randomUUID().toString())
                 .subject(account.id().value().toString())
                 .claim(TOKEN_TYPE_CLAIM, tokenType)
                 .claim("roles", account.roles()

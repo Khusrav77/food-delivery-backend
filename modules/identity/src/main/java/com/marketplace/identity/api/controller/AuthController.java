@@ -5,9 +5,13 @@ import com.marketplace.identity.api.dto.*;
 import com.marketplace.identity.api.mapper.AuthMapper;
 import com.marketplace.identity.api.request.ClientIpResolver;
 import com.marketplace.identity.application.command.AuthenticateCommand;
+import com.marketplace.identity.application.command.LogoutAllSessionsCommand;
+import com.marketplace.identity.application.command.LogoutCurrentSessionCommand;
 import com.marketplace.identity.application.command.RefreshTokenCommand;
 import com.marketplace.identity.application.command.RequestOtpCommand;
 import com.marketplace.identity.application.port.in.AuthenticateUseCase;
+import com.marketplace.identity.application.port.in.LogoutAllSessionsUseCase;
+import com.marketplace.identity.application.port.in.LogoutCurrentSessionUseCase;
 import com.marketplace.identity.application.port.in.RefreshTokenUseCase;
 import com.marketplace.identity.application.port.in.RequestOtpUseCase;
 import com.marketplace.identity.application.result.AuthenticationResult;
@@ -32,6 +36,8 @@ public final class AuthController {
     private final RequestOtpUseCase requestOtpUseCase;
     private final AuthenticateUseCase authenticateUseCase;
     private final RefreshTokenUseCase refreshTokenUseCase;
+    private final LogoutCurrentSessionUseCase logoutCurrentSessionUseCase;
+    private final LogoutAllSessionsUseCase logoutAllSessionsUseCase;
     private final boolean includeOtpDebugCode;
     private final ClientIpResolver clientIpResolver;
 
@@ -39,6 +45,8 @@ public final class AuthController {
             RequestOtpUseCase requestOtpUseCase,
             AuthenticateUseCase authenticateUseCase,
             RefreshTokenUseCase refreshTokenUseCase,
+            LogoutCurrentSessionUseCase logoutCurrentSessionUseCase,
+            LogoutAllSessionsUseCase logoutAllSessionsUseCase,
             ClientIpResolver clientIpResolver,
             @Value("${identity.otp.expose-code:false}") boolean includeOtpDebugCode
     ) {
@@ -48,6 +56,10 @@ public final class AuthController {
                 authenticateUseCase, "authenticateUseCase must not be null");
         this.refreshTokenUseCase = Objects.requireNonNull(
                 refreshTokenUseCase, "refreshTokenUseCase must not be null");
+        this.logoutCurrentSessionUseCase = Objects.requireNonNull(
+                logoutCurrentSessionUseCase, "logoutCurrentSessionUseCase must not be null");
+        this.logoutAllSessionsUseCase = Objects.requireNonNull(
+                logoutAllSessionsUseCase, "logoutAllSessionsUseCase must not be null");
         this.clientIpResolver = Objects.requireNonNull(
                 clientIpResolver, "clientIpResolver must not be null");
         this.includeOtpDebugCode = includeOtpDebugCode;
@@ -76,6 +88,23 @@ public final class AuthController {
         RefreshTokenCommand command = AuthMapper.toCommand(request);
         RefreshTokenResult result = refreshTokenUseCase.execute(command);
         return ResponseEntity.ok(AuthMapper.toResponse(result));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(
+            @RequestBody LogoutRequest request,
+            Authentication authentication) {
+        UserId userId = (UserId) authentication.getPrincipal();
+        logoutCurrentSessionUseCase.execute(
+                new LogoutCurrentSessionCommand(userId, request.refreshToken()));
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/logout-all")
+    public ResponseEntity<Void> logoutAll(Authentication authentication) {
+        UserId userId = (UserId) authentication.getPrincipal();
+        logoutAllSessionsUseCase.execute(new LogoutAllSessionsCommand(userId));
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/me")
