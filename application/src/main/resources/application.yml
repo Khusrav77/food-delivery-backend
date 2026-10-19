@@ -1,0 +1,34 @@
+
+spring:
+  application:
+    name: my-marketplace
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/changelog-master.yaml
+  data:
+    redis:
+      url: ${REDIS_URL:redis://localhost:6379}
+
+security:
+  jwt:
+    access-token-ttl: 15m
+    refresh-token-ttl: 30d
+
+identity:
+  otp:
+    expose-code: false
+    rate-limit:
+      per-phone-requests-per-minute: 1
+      per-phone-requests-per-15-minutes: 5
+      per-ip-requests-per-15-minutes: 20
+      per-ip-requests-per-day: 100
+      trusted-proxies: []

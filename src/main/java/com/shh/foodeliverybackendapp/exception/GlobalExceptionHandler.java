@@ -1,63 +1,46 @@
 package com.shh.foodeliverybackendapp.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import org.springframework.web.servlet.resource.NoResourceFoundException;
 import java.util.List;
 
 
-/**
- * Translates exceptions into a single ErrorResponse shape.
- *
- * Keep this short and predictable — the goal is that every error the API
- * returns looks the same on the wire, so clients don't need a special case
- * per controller.
- */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNotFound(EntityNotFoundException ex,
-                                                        HttpServletRequest req) {
-        return build(HttpStatus.NOT_FOUND, ex.getMessage(), req);
+    @ExceptionHandler(ApiException.class)
+    public ProblemDetail handleApiException(ApiException ex,
+                                            HttpServletRequest req) {
+        log.warn(
+                "API exception: status={}, message={}, path={}",
+                ex.getStatus().value(),
+                ex.getMessage(),
+                req.getRequestURI());
+
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                ex.getStatus(),
+                ex.getMessage());
+
+        problemDetail.setTitle(ex.getStatus().getReasonPhrase());
+        problemDetail.setProperty("path", req.getRequestURI());
+        return problemDetail;
     }
 
-    @ExceptionHandler(EntityAlreadyExistsException.class)
-    public ResponseEntity<ErrorResponse> handleAlreadyExists(EntityAlreadyExistsException ex,
-                                                             HttpServletRequest req) {
-        return build(HttpStatus.CONFLICT, ex.getMessage(), req);
-    }
-
-    @ExceptionHandler(InvalidOtpException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidOtpException (InvalidOtpException ex, HttpServletRequest req) {
-        return build(HttpStatus.BAD_REQUEST, ex.getMessage(), req);
-    }
-
-    @ExceptionHandler(InvalidRefreshTokenException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidRefreshToken(InvalidRefreshTokenException ex, HttpServletRequest req) {
-        return build(HttpStatus.UNAUTHORIZED, ex.getMessage(), req);
-    }
-
-    @ExceptionHandler(NoResourceFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNoResourceFound(NoResourceFoundException ex, HttpServletRequest req) {
-        return build(HttpStatus.NOT_FOUND, "Resource not found", req);
-    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleBodyValidation(
+    public ProblemDetail handleBodyValidation(
             MethodArgumentNotValidException ex, HttpServletRequest req) {
 
         List<FieldErrorResponse> fieldErrors = ex.getBindingResult()
@@ -67,86 +50,70 @@ public class GlobalExceptionHandler {
                         fe.getField(),
                         fe.getDefaultMessage() == null
                                 ? "invalid"
-                                : fe.getDefaultMessage()
-                ))
+                                : fe.getDefaultMessage()))
                 .toList();
 
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-
-        return ResponseEntity.status(status).body(
-                ErrorResponse.ofValidation(
-                        status.value(),
-                        status.getReasonPhrase(),
-                        "Validation failed",
-                        req.getRequestURI(),
-                        fieldErrors));
+        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+        problemDetail.setTitle("Validation failed");
+        problemDetail.setDetail("Request contains invalid data");
+        problemDetail.setProperty("path", req.getRequestURI());
+        problemDetail.setProperty("fieldErrors", fieldErrors);
+        return problemDetail;
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ErrorResponse> handleConstraintViolation(
+    public ProblemDetail handleConstraintViolation(
             ConstraintViolationException ex,
             HttpServletRequest req) {
 
         List<FieldErrorResponse> fieldErrors = ex.getConstraintViolations()
                 .stream()
-                .map(this::toFieldError)
+                .map(v -> new FieldErrorResponse(
+                       v.getPropertyPath().toString(),
+                        v.getMessage()))
                 .toList();
 
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-
-        return ResponseEntity.status(status).body(
-                ErrorResponse.ofValidation(
-                        status.value(),
-                        status.getReasonPhrase(),
-                        "Validation failed",
-                        req.getRequestURI(),
-                        fieldErrors));
+        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+        problemDetail.setTitle("Validation failed");
+        problemDetail.setDetail("Request contains invalid parameters");
+        problemDetail.setProperty("path", req.getRequestURI());
+        problemDetail.setProperty("fieldErrors", fieldErrors);
+        return problemDetail;
     }
 
     @ExceptionHandler({HttpMessageNotReadableException.class, MethodArgumentTypeMismatchException.class})
-    public ResponseEntity<ErrorResponse> handleBadRequest(Exception ex, HttpServletRequest req) {
-        return build(HttpStatus.BAD_REQUEST, ex.getMessage(), req);
+    public ProblemDetail handleBadRequest(Exception ex, HttpServletRequest req) {
+
+        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+        problemDetail.setTitle("Bad request");
+        problemDetail.setDetail("Request contains invalid request");
+        problemDetail.setProperty("path", req.getRequestURI());
+        return problemDetail;
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ErrorResponse> handleDataIntegrity(DataIntegrityViolationException ex,
+    public ProblemDetail handleDataIntegrity(DataIntegrityViolationException ex,
                                                              HttpServletRequest req) {
         // DataIntegrityViolation typically means a UNIQUE/FK constraint failed.
         // 409 Conflict is a better fit than 500.
-        log.warn("Data integrity violation: {}", ex.getMostSpecificCause().getMessage());
-        return build(HttpStatus.CONFLICT, "Data integrity violation", req);
-    }
-
-    @ExceptionHandler(UnsupportedOperationException.class)
-    public ResponseEntity<ErrorResponse> handleUnsupported(UnsupportedOperationException ex,
-                                                           HttpServletRequest req) {
-        return build(HttpStatus.METHOD_NOT_ALLOWED, ex.getMessage(), req);
+        log.warn("Data integrity violation", ex);
+        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.CONFLICT);
+        problemDetail.setTitle("Conflict");
+        problemDetail.setDetail("Data integrity violation");
+        problemDetail.setProperty("path", req.getRequestURI());
+        return problemDetail;
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleAny(Exception ex, HttpServletRequest req) {
+    public ProblemDetail handleAny(Exception ex, HttpServletRequest req) {
         // Catch-all: don't leak the stack trace through the API, but log it for ops.
         log.error("Unhandled exception", ex);
-        return build(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error", req);
-    }
+        ProblemDetail problemDetail = ProblemDetail.forStatus(
+                HttpStatus.INTERNAL_SERVER_ERROR);
 
-    // --- helpers ---
-
-    private ResponseEntity<ErrorResponse> build(HttpStatus status,
-                                                String message,
-                                                HttpServletRequest req) {
-        return ResponseEntity.status(status).body(
-                ErrorResponse.of(
-                        status.value(),
-                        status.getReasonPhrase(),
-                        message,
-                        req.getRequestURI()));
-    }
-
-    private FieldErrorResponse toFieldError(ConstraintViolation<?> violation) {
-        return new FieldErrorResponse(
-                violation.getPropertyPath().toString(),
-                violation.getMessage()
-        );
+        problemDetail.setTitle("Unhandled exception");
+        problemDetail.setDetail("Unexpected server error");
+        problemDetail.setProperty("path", req.getRequestURI());
+        return problemDetail;
     }
 }

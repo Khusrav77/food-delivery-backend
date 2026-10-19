@@ -43,7 +43,6 @@ public class MenuItemServiceImpl implements MenuItemService {
     @Override
     @Transactional(readOnly = true)
     public MenuItemResponse findById(UUID id) {
-
         return MenuItemMapper.toResponse(getOrThrow(id));
     }
 
@@ -73,14 +72,9 @@ public class MenuItemServiceImpl implements MenuItemService {
         if (request.productId() != null
                 && (menuItem.getProduct() == null
                     || !request.productId().equals(menuItem.getProduct().getId()))) {
-            // MenuItem doesn't expose setProduct() today, and re-parenting a
-            // menu item to another product is a rare op that tends to indicate
-            // a modelling problem. Flag it loudly until there is a real use
-            // case and a dedicated endpoint with explicit semantics.
             throw new UnsupportedOperationException(
                     "Re-parenting a menu item to a different product is not supported. "
-                            + "Delete and recreate instead."
-            );
+                            + "Delete and recreate instead.");
         }
 
         if (request.name() != null) menuItem.setName(request.name());
@@ -100,9 +94,7 @@ public class MenuItemServiceImpl implements MenuItemService {
     @Override
     public MenuItemResponse attachTag(UUID menuItemId, UUID tagId) {
         MenuItem menuItem = getOrThrow(menuItemId);
-        menuItemTagsService.attach(menuItemId, tagId);
-        // The cached `tags` collection is stale after the join row was inserted
-        // from another bean — re-load the aggregate so the response reflects it.
+        menuItemTagsService.attach(menuItem.getId(), tagId);
         return MenuItemMapper.toResponse(getOrThrow(menuItemId));
     }
 

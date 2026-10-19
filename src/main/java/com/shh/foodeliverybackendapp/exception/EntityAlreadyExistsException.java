@@ -1,9 +1,11 @@
 package com.shh.foodeliverybackendapp.exception;
 
 
-public class EntityAlreadyExistsException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class EntityAlreadyExistsException extends ApiException {
 
     public EntityAlreadyExistsException(String message) {
-        super(message);
+        super(HttpStatus.CONFLICT, message);
     }
 }

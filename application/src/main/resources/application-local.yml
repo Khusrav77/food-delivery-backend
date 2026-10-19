@@ -1,0 +1,17 @@
+
+spring:
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/marketplace}
+    username: ${DATABASE_USERNAME:marketplace}
+    password: ${DATABASE_PASSWORD:${POSTGRES_PASSWORD:local-dev-password}}
+    driver-class-name: org.postgresql.Driver
+
+security:
+  jwt:
+    active-key-id: local-dev
+    keys:
+      local-dev: local-only-development-secret-key-not-for-production
+
+identity:
+  otp:
+    expose-code: true

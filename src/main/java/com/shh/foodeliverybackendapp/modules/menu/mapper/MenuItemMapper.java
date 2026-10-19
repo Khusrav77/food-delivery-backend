@@ -46,8 +46,7 @@ public final class MenuItemMapper {
                 menuItem.getUpdatedAt(),
                 imageUrls,
                 sizes,
-                tagLabels
-        );
+                tagLabels);
     }
 
     private static MenuItemResponse.SizeView toSizeView(MenuItemSize size) {
@@ -56,7 +55,6 @@ public final class MenuItemMapper {
                 size.getLabel() == null ? null : size.getLabel().name(),
                 size.getSizeValue(),
                 size.getSizeUnit() == null ? null : size.getSizeUnit().name(),
-                size.getPrice()
-        );
+                size.getPrice());
     }
 }

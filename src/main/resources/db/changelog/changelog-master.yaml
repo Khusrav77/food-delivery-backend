@@ -9,3 +9,5 @@ databaseChangeLog:
       file: db/changelog/2026-06-15-001-fix-users-table.yaml
   - include:
       file: db/changelog/2026-06-17-001-fix-tags-add-color.yaml
+  - include:
+      file: db/changelog/2026-06-18-001-create-user-addresses-table.yaml

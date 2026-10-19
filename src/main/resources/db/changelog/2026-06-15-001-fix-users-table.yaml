@@ -1,9 +1,7 @@
 databaseChangeLog:
-
   - changeSet:
       id: 2026-06-15-001-fix-users-table
       author: shh
-
       changes:
         - addColumn:
             tableName: users

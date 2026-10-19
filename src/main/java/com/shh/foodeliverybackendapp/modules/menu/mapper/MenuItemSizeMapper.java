@@ -15,8 +15,7 @@ public final class MenuItemSizeMapper {
                 request.label(),
                 request.sizeValue(),
                 request.sizeUnit(),
-                request.price()
-        );
+                request.price());
     }
 
     public static MenuItemSizeResponse toResponse(MenuItemSize size) {
@@ -27,7 +26,6 @@ public final class MenuItemSizeMapper {
                 size.getLabel(),
                 size.getSizeValue(),
                 size.getSizeUnit(),
-                size.getPrice()
-        );
+                size.getPrice());
     }
 }

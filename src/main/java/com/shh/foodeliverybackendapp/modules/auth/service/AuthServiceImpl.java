@@ -1,4 +1,4 @@
-package com.shh.foodeliverybackendapp.modules.auth.service.impl;
+package com.shh.foodeliverybackendapp.modules.auth.service;
 
 import com.shh.foodeliverybackendapp.exception.InvalidOtpException;
 import com.shh.foodeliverybackendapp.exception.InvalidRefreshTokenException;
@@ -8,7 +8,6 @@ import com.shh.foodeliverybackendapp.modules.auth.dto.request.VerifyOtpRequest;
 import com.shh.foodeliverybackendapp.modules.auth.dto.response.AuthResponse;
 import com.shh.foodeliverybackendapp.modules.auth.dto.response.UserVerifyResponse;
 import com.shh.foodeliverybackendapp.modules.security.JwtService;
-import com.shh.foodeliverybackendapp.modules.auth.service.AuthService;
 import com.shh.foodeliverybackendapp.modules.otp.service.OtpService;
 import com.shh.foodeliverybackendapp.modules.user.entity.User;
 import com.shh.foodeliverybackendapp.modules.user.mapper.UserMapper;
@@ -51,7 +50,6 @@ public class AuthServiceImpl implements AuthService {
         boolean isValid = otpService.verifyCode(request.phone(), request.code());
 
         if (!isValid) {
-            log.warn("OTP verification failed for phone={}", maskPhone(request.phone()));
             throw new InvalidOtpException("Invalid OTP code");
         }
 
@@ -72,7 +70,6 @@ public class AuthServiceImpl implements AuthService {
         String token = request.refreshToken();
 
         if (!jwtService.isTokenValid(token) || !jwtService.isRefreshToken(token)) {
-            log.warn("Invalid refresh token");
             throw new InvalidRefreshTokenException("Invalid refresh token");
         }
 

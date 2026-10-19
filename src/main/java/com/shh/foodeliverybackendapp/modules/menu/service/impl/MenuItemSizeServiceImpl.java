@@ -38,8 +38,6 @@ public class MenuItemSizeServiceImpl implements MenuItemSizeService {
         MenuItemSize size = MenuItemSizeMapper.toEntity(request, menuItem);
         menuItem.addSize(size);
 
-        // menuItem.addSize() sets the bidirectional link; saving the size directly
-        // gives us back the generated id without triggering a full parent reload.
         return toResponse(menuItemSizeRepo.save(size));
     }
 
@@ -77,14 +75,12 @@ public class MenuItemSizeServiceImpl implements MenuItemSizeService {
         if (request.sizeUnit() != null)  size.setSizeUnit(request.sizeUnit());
         if (request.price() != null)     size.setPrice(request.price());
 
-        // Entity is managed — dirty-checking flushes the update automatically.
         return toResponse(size);
     }
 
     @Override
     public void deleteById(UUID id) {
         MenuItemSize size = getOrThrow(id);
-        // Remove via parent to keep the in-memory collection consistent.
         size.getMenuItem().removeSize(size);
         menuItemSizeRepo.delete(size);
     }
