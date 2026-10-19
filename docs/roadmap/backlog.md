@@ -50,12 +50,13 @@
   - Domain, application, infrastructure, API и Spring Context.
   - Приёмка: тесты проходят; основные отрицательные сценарии покрыты.
   - Результат: 63 теста identity и 1 Spring MVC integration test прошли; дополнительно Maven reactor прогнал 5 тестов common-core. Покрыты OTP/account rules, refresh-token сценарии, JWT validation, API flow, security filter и создание Spring-контекста.
-- [ ] `ID-03` Подключить PostgreSQL persistence.
+- [x] `ID-03` Подключить PostgreSQL persistence.
   - PostgreSQL через Docker Compose, миграции схемы и persistence adapter в `identity`.
   - Использовать существующую доменную модель `UserAccount`; не дублировать её в domain.
   - Решение: использовать Liquibase для версионирования и применения миграций.
   - Уникальность телефона и транзакционность операций.
   - Заменить in-memory account storage на PostgreSQL adapter.
+  - Результат: PostgreSQL поднят через Docker Compose; Liquibase YAML changelog создал таблицы учётных записей и ролей. Hibernate проверил схему, полный OTP/JWT HTTP integration test прошёл с PostgreSQL. `./mvnw -pl application -am test` завершился успешно.
 - [ ] `ID-04` Подготовить авторизацию к production.
   - Redis для OTP и TTL, rate limiting, ротация и отзыв refresh token, безопасный JWT secret, единый формат ошибок API.
   - Перед началом отдельно согласовать конкретные правила и критерии безопасности.
@@ -89,4 +90,4 @@
 
 ## Текущая точка продолжения
 
-Эпик APP завершён. `ID-01` и `ID-02` завершены: полный OTP/JWT flow проверен через HTTP, тесты identity и Spring MVC integration проходят. Следующая задача: `ID-03` — подключить PostgreSQL persistence для `identity`.
+Эпик APP завершён. `ID-01`, `ID-02` и `ID-03` завершены: полный OTP/JWT flow проверен через HTTP, тесты проходят, `identity` использует PostgreSQL persistence с Liquibase. Следующая точка: обсудить и зафиксировать правила и критерии безопасности для `ID-04` до начала реализации.

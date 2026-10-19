@@ -4,12 +4,12 @@ import com.marketplace.identity.application.port.out.UserAccountPort;
 import com.marketplace.identity.domain.model.PhoneNumber;
 import com.marketplace.identity.domain.model.UserAccount;
 import com.marketplace.identity.domain.model.UserId;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-
+@Service
 public class PostgresUserAccountAdapter implements UserAccountPort {
 
     private final UserAccountJpaRepository repository;
