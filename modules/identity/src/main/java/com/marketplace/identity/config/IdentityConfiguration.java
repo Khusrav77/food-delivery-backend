@@ -17,14 +17,16 @@ import com.marketplace.identity.application.service.CreateUserAccountService;
 import com.marketplace.identity.application.service.RefreshTokenService;
 import com.marketplace.identity.application.service.RequestOtpService;
 import com.marketplace.identity.application.service.VerifyOtpService;
+import com.marketplace.identity.infrastructure.adapter.transaction.SpringTransactionalCreateUserAccountUseCase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
 public class IdentityConfiguration {
 
     @Bean
-    public CreateUserAccountUseCase createUserAccountUseCase(
+    public CreateUserAccountService createUserAccountService(
             UserAccountPort userAccountPort,
             EventPublisherPort eventPublisherPort,
             ClockPort clockPort) {
@@ -32,6 +34,15 @@ public class IdentityConfiguration {
                 userAccountPort,
                 eventPublisherPort,
                 clockPort);
+    }
+
+    @Bean
+    public CreateUserAccountUseCase createUserAccountUseCase(
+            CreateUserAccountService createUserAccountService,
+            PlatformTransactionManager transactionManager) {
+        return new SpringTransactionalCreateUserAccountUseCase(
+                createUserAccountService,
+                transactionManager);
     }
 
     @Bean

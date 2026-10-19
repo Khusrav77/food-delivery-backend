@@ -1,3 +1,8 @@
 identity:
   otp:
     expose-code: true
+spring:
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5437/food_delivery_db}
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD:postgres}

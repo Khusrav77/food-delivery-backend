@@ -1,7 +1,6 @@
 package com.marketplace.identity.application.service;
 
 import com.marketplace.identity.application.command.CreateUserAccountCommand;
-import com.marketplace.identity.application.port.in.CreateUserAccountUseCase;
 import com.marketplace.identity.domain.event.UserAccountCreated;
 import com.marketplace.identity.application.port.out.ClockPort;
 import com.marketplace.identity.application.port.out.EventPublisherPort;
@@ -12,7 +11,7 @@ import com.marketplace.identity.domain.model.UserId;
 
 import java.util.Objects;
 
-public final class CreateUserAccountService implements CreateUserAccountUseCase {
+public final class CreateUserAccountService {
 
     private final UserAccountPort userAccountPort;
     private final EventPublisherPort eventPublisherPort;

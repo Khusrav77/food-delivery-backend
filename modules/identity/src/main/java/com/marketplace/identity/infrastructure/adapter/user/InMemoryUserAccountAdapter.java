@@ -4,13 +4,11 @@ import com.marketplace.identity.application.port.out.UserAccountPort;
 import com.marketplace.identity.domain.model.PhoneNumber;
 import com.marketplace.identity.domain.model.UserAccount;
 import com.marketplace.identity.domain.model.UserId;
-import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Component
 public final class InMemoryUserAccountAdapter implements UserAccountPort {
 
     private final Map<PhoneNumber, UserAccount> accountsByPhone = new ConcurrentHashMap<>();

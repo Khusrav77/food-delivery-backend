@@ -51,7 +51,9 @@
   - Приёмка: тесты проходят; основные отрицательные сценарии покрыты.
   - Результат: 63 теста identity и 1 Spring MVC integration test прошли; дополнительно Maven reactor прогнал 5 тестов common-core. Покрыты OTP/account rules, refresh-token сценарии, JWT validation, API flow, security filter и создание Spring-контекста.
 - [ ] `ID-03` Подключить PostgreSQL persistence.
-  - PostgreSQL через Docker Compose, миграции схемы, JPA adapter для аккаунтов.
+  - PostgreSQL через Docker Compose, миграции схемы и persistence adapter в `identity`.
+  - Использовать существующую доменную модель `UserAccount`; не дублировать её в domain.
+  - Решение: использовать Liquibase для версионирования и применения миграций.
   - Уникальность телефона и транзакционность операций.
   - Заменить in-memory account storage на PostgreSQL adapter.
 - [ ] `ID-04` Подготовить авторизацию к production.

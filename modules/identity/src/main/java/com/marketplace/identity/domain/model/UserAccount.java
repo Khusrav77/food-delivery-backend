@@ -23,6 +23,15 @@ public final class UserAccount {
         return new UserAccount(id, phone, EnumSet.of(Role.USER), AccountStatus.ACTIVE);
     }
 
+    public static UserAccount reconstitute(
+            UserId id,
+            PhoneNumber phone,
+            Set<Role> roles,
+            AccountStatus status
+    ) {
+        return new UserAccount(id, phone, roles, status);
+    }
+
     public UserId id() {
         return id;
     }
