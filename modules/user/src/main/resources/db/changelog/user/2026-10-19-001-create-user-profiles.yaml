@@ -1,0 +1,124 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026-10-19-user-001-create-profiles-and-addresses
+      author: codex
+      changes:
+        - createTable:
+            tableName: user_profiles
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_user_profiles
+                    nullable: false
+              - column:
+                  name: account_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: uk_user_profiles_account_id
+              - column:
+                  name: first_name
+                  type: VARCHAR(120)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_name
+                  type: VARCHAR(120)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: VARCHAR(254)
+              - column:
+                  name: year_of_birth
+                  type: INTEGER
+              - column:
+                  name: avatar_url
+                  type: VARCHAR(2048)
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: version
+                  type: BIGINT
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: user_delivery_addresses
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_user_delivery_addresses
+                    nullable: false
+              - column:
+                  name: profile_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: label
+                  type: VARCHAR(80)
+              - column:
+                  name: city
+                  type: VARCHAR(120)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: street
+                  type: VARCHAR(180)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: building
+                  type: VARCHAR(40)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: apartment
+                  type: VARCHAR(40)
+              - column:
+                  name: entrance
+                  type: VARCHAR(40)
+              - column:
+                  name: floor
+                  type: VARCHAR(40)
+              - column:
+                  name: intercom
+                  type: VARCHAR(40)
+              - column:
+                  name: comment
+                  type: VARCHAR(500)
+              - column:
+                  name: is_default
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: user_delivery_addresses
+            baseColumnNames: profile_id
+            referencedTableName: user_profiles
+            referencedColumnNames: id
+            constraintName: fk_user_delivery_addresses_profile
+            onDelete: CASCADE
+        - createIndex:
+            tableName: user_delivery_addresses
+            indexName: idx_user_delivery_addresses_profile_id
+            columns:
+              - column:
+                  name: profile_id

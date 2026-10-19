@@ -13,7 +13,7 @@ spring:
 
   liquibase:
     enabled: true
-    change-log: classpath:db/changelog/changelog-master.yaml
+    change-log: classpath:db/changelog/application-master.yaml
   data:
     redis:
       url: ${REDIS_URL:redis://localhost:6379}

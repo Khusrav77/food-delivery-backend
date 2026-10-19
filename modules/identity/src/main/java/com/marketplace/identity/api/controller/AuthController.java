@@ -95,7 +95,7 @@ public final class AuthController {
     public ResponseEntity<Void> logout(
             @Valid @RequestBody LogoutRequest request,
             Authentication authentication) {
-        UserId userId = (UserId) authentication.getPrincipal();
+        UserId userId = new UserId(UUID.fromString(authentication.getName()));
         logoutCurrentSessionUseCase.execute(
                 new LogoutCurrentSessionCommand(userId, request.refreshToken()));
         return ResponseEntity.noContent().build();
@@ -103,7 +103,7 @@ public final class AuthController {
 
     @PostMapping("/logout-all")
     public ResponseEntity<Void> logoutAll(Authentication authentication) {
-        UserId userId = (UserId) authentication.getPrincipal();
+        UserId userId = new UserId(UUID.fromString(authentication.getName()));
         logoutAllSessionsUseCase.execute(new LogoutAllSessionsCommand(userId));
         return ResponseEntity.noContent().build();
     }
@@ -111,7 +111,7 @@ public final class AuthController {
     @GetMapping("/me")
     public ResponseEntity<AuthenticatedSessionResponse> currentSession(
             Authentication authentication) {
-        UserId userId = (UserId) authentication.getPrincipal();
+        UserId userId = new UserId(UUID.fromString(authentication.getName()));
         Set<String> roles = authentication.getAuthorities().stream()
                 .map(authority -> authority.getAuthority())
                 .collect(Collectors.toUnmodifiableSet());
