@@ -22,7 +22,6 @@ public final class RedisOtpStorageAdapter implements OtpStoragePort {
 
     private static final RedisScript<Long> SAVE_OTP_SCRIPT = script("redis/save-otp.lua");
     private static final RedisScript<Long> VERIFY_OTP_SCRIPT = script("redis/verify-otp.lua");
-
     private final StringRedisTemplate redisTemplate;
 
     public RedisOtpStorageAdapter(StringRedisTemplate redisTemplate) {
